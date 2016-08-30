@@ -1,0 +1,1 @@
+# BetterES6Classes
