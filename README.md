@@ -40,9 +40,9 @@ I came up with what I believe is a better solution with the following advantages
  
  - public interface is clear and separated from the implementation as a proxy to private methods
 
-## Boiler Code ##
+## Code ##
 
-**Define 'New' method for all functions:**
+**Boilerplate - Define 'New' method for all functions:**
 
     "use strict";
     
