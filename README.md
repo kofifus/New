@@ -72,7 +72,7 @@ I came up with what I believe is a better solution with the following advantages
     	// public interface
     	return {
     		method,  // do something
-    	}
+    	};
     }
       
     let instance=Class.New();
@@ -89,26 +89,26 @@ I came up with what I believe is a better solution with the following advantages
     	let method1 = () => {
     	  elem.style.color=elemColor;
     	  return elemColor;
-    	};
+     };
    
-       	let changeColor = () => {
+     let changeColor = () => {
     	  return method1(); // call another private method
     	};
  	
     	// constructor
-    	ctor.ctor = (elem_) => {
+    	ctor.ctor = elem_ => {
     	  elem=elem_;
     
     	  elem.onclick = e => {
     	    e.currentTarget.style.fontSize='12px';
-    	  }
-    	}
+    	  };
+    	};
     
     	// public interface
     	return {
     		changeColor,  // change color
     		set color(c) { elemColor=c; }
-    	}
+    	};
     }
     
     let myDiv=document.getElementById('myDiv');
