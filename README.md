@@ -30,7 +30,7 @@ I ended up dissatisfied with all of these solutions for the following reasons:
 
 Solution
 ---------
-I ended up with what I believe is a better solution with the following advantages:
+I came up with what I believe is a better solution with the following advantages:
 
  - no need for 'this._', that/self, weakmaps, symbols etc. Clear and straightforward 'class' code 
 
