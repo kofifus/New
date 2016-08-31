@@ -44,8 +44,6 @@ I came up with what I believe is a better solution with the following advantages
 
 **Boilerplate - Define 'New' for all functions:**
 
-    "use strict";
-    
     Function.prototype.New = function(...args) {
       let inst=Object.create(null); // the new instance
       let ctorContainer={ ctor: null }; 
