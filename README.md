@@ -117,7 +117,7 @@ I came up with what I believe is a better solution with the following advantages
 
 ## Caviets ##
 
- - constructor has to be defined with ctor.ctor so as to be known to 'New', a bit ugly but easy enough
+ - constructor has to be defined with ctor.ctor so that 'New' can call it with the right arguments, a bit ugly but easy enough
  
  - The way the code is ATM there is not much support for inheritance, but I'm sure this can be added quite easily. Personally I am trying to avoid inheritance in favor of composition.
 
