@@ -42,7 +42,7 @@ I came up with what I believe is a better solution with the following advantages
 
 ## Code ##
 
-**Boilerplate - Define 'New' method for all functions:**
+**Boilerplate - Define 'New' for all functions:**
 
     "use strict";
     
