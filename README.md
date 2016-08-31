@@ -80,28 +80,27 @@ I came up with what I believe is a better solution with the following advantages
 
 **Complete class - with constructor and attributes:**
 
-    
     function ColoredElem(ctor) {
     	// private variables
     	let elem, elemColor='red';
     
     	// private methods - use ONLY arrow functions for correct 'this' binding
     	let method1 = () => {
-    	  elem.style.color=elemColor;
-    	  return elemColor;
-     };
-   
-     let changeColor = () => {
-    	  return method1(); // call another private method
+    		elem.style.color=elemColor;
+    		return elemColor;
     	};
- 	
+    
+    	let changeColor = () => {
+    		return method1(); // call another private method
+    	};
+    
     	// constructor
     	ctor.ctor = elem_ => {
-    	  elem=elem_;
+    		elem=elem_;
     
-    	  elem.onclick = e => {
-    	    e.currentTarget.style.fontSize='12px';
-    	  };
+    		elem.onclick = e => {
+    			e.currentTarget.style.fontSize='12px';
+    		};
     	};
     
     	// public interface
@@ -115,8 +114,7 @@ I came up with what I believe is a better solution with the following advantages
     let coloredElem=ColoredElem.New(myDiv1);
     coloredElem.color='blue';
     coloredElem.changeColor();
-    
-    
+
 ## Caviets ##
 
  - constructor has to be defined with ctor.ctor so as to be known to 'New', a bit ugly but easy enough
@@ -126,4 +124,5 @@ I came up with what I believe is a better solution with the following advantages
 ## Example ##
 
 See a running more elaborate example at [plunkr](https://plnkr.co/edit/aLp6Jj1MAUo8qBM7GvPs)
+
 
