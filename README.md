@@ -94,7 +94,7 @@ I came up with what I believe is a better solution with the following advantages
     		return method1(); // call another private method
     	};
     
-    	// constructor
+    	// constructors must be in ctor.ctor
     	ctor.ctor = elem_ => {
     		elem=elem_;
     
