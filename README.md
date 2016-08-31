@@ -58,7 +58,7 @@ I came up with what I believe is a better solution with the following advantages
 **Simple class - no constructor or attributes:**
 
     
-    function Class() {
+    function MyClass() {
     	// private interface, 'this' here is the instance
     
     	// private variables
@@ -75,7 +75,7 @@ I came up with what I believe is a better solution with the following advantages
     	};
     }
       
-    let instance=Class.New();
+    let instance=MyClass.New();
     instance.method(0, 1);
 
 **Complete class - with constructor and attributes:**
