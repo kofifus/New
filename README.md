@@ -36,7 +36,7 @@ I came up with what I believe is a better solution with the following advantages
 
  - private variables and methods are _really_ private and have the correct 'this' binding
 
- - No use of 'this' at all which means clear code that is much less error prone
+ - No use of 'this' at all which means clear code that is much less error prone (as a side note, before ES6 'this' was a necessary evil, not it is simply evil, an evil we can do without).
  
  - public interface is clear and separated from the implementation as a proxy to private methods
 
