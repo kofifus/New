@@ -17,7 +17,7 @@ There are various solutions to creating Javascript 'classes' with public and pri
  - Private data via Symbols
   (see: [http://exploringjs.com/es6/ch_classes.html](http://exploringjs.com/es6/ch_classes.html))
 
-
+<br />
 I ended up dissatisfied with all of these solutions for the following reasons:
 
  - Ugly syntax - ending up with lot's of 'this._', defining methods inside the constructor etc
