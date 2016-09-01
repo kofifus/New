@@ -30,7 +30,7 @@ I ended up dissatisfied with all of these solutions for the following reasons:
 
 Solution
 ---------
-I came up with what I believe is a better solution with the following advantages:
+Below is a better, simpler solution with the following advantages:
 
  - no need for 'this._', that/self, weakmaps, symbols etc. Clear and straightforward 'class' code 
 
@@ -78,7 +78,7 @@ I came up with what I believe is a better solution with the following advantages
     }
     
     let counter=Counter.New();
-    console.log(counter instanceof Counter);
+    console.log(counter instanceof Counter); // true
     counter.reset(100);
     console.log('Counter next = '+counter.next());
      
@@ -130,8 +130,7 @@ I came up with what I believe is a better solution with the following advantages
     
     let myDiv1=document.getElementById('myDiv1');
     let coloredDiv = ColoredDiv.New(myDiv1);
-    console.log(coloredDiv instanceof ColoredDiv);
-    
+    console.log(coloredDiv instanceof ColoredDiv); // true
     coloredDiv.blue();
 
 ## Caviets ##
