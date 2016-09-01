@@ -47,30 +47,30 @@ Below is a better, simpler solution with the following advantages:
     if (typeof Function.prototype.New === 'undefined') {
     	Function.prototype.New= function(...args) {
     		// create instance 
-    		// inst can be either { f1, f2 } or { ctor: f1, declaration: { f2, f3 } }
+    		// inst can be either { f1, f2 } or { ctor: f1, header: { f2, f3 } }
     		let inst=Reflect.construct(this, []); 
     
-    		// get declaration and ctor from inst
-    		if (!inst || typeof inst!=='object' || Array.isArray(inst) || typeof inst==='function' || Object.keys(inst).length===0) throw 'New - invalid declaration';
-    		let declaration, ctor=inst.ctor;
-    		if (ctor && typeof ctor!=='function') throw 'New - invalid declaration';
-    		declaration=(ctor ? inst.declaration : inst);    
-    		if (!declaration || typeof declaration!=='object' || Array.isArray(declaration) || typeof declaration==='function' || Object.keys(declaration).length===0) throw 'New - invalid declaration';
-    		if (declaration.ctor) throw 'New - invalid declaration';
-    		Object.setPrototypeOf(declaration, this.prototype); // fix prototype for instanceof
+    		// get header and ctor from inst
+    		if (!inst || typeof inst!=='object' || Array.isArray(inst) || typeof inst==='function' || Object.keys(inst).length===0) throw 'New - invalid header';
+    		let header, ctor=inst.ctor;
+    		if (ctor && typeof ctor!=='function') throw 'New - invalid header';
+    		header=(ctor ? inst.header : inst);    
+    		if (!header || typeof header!=='object' || Array.isArray(header) || typeof header==='function' || Object.keys(header).length===0) throw 'New - invalid header';
+    		if (header.ctor) throw 'New - invalid header';
+    		Object.setPrototypeOf(header, this.prototype); // fix prototype for instanceof
     		
     		// call ctor
     		if (args.length>0 && !ctor) throw('New - missing ctor'); // no ctor to send arguments
     		if (ctor) ctor(...args); 
     
-    		return declaration;
+    		return header;
     	}
     }
 
 **Simple class - no constructor or attributes:**
 
     function Counter() {
-    	// private variable & methods
+    	// private variables & methods
     	let count=0;
     
     	function next() {
@@ -80,11 +80,16 @@ Below is a better, simpler solution with the following advantages:
     	function reset(newCount) {
     		count=newCount;
     	}
+    	
+    	function value() {
+    		return count;
+    	}
     
     	// public interface
     	return {
     		next,  // get next value
     		reset, // reset value
+    		value  // get value
     	}
     }
     	
@@ -94,12 +99,15 @@ Below is a better, simpler solution with the following advantages:
     counter.reset(100);
     console.log('Counter next = '+counter.next());
 
-**Complete class - with constructor and attributes:**
+**Complete class - with constructor, attributes & static methods:**
 
     function ColoredDiv() {
-    	// private variable & methods
+    	// private variables & methods
     	let elem;
     	let state; // true=red, false=blue
+    
+    	// create static instance counter
+    	if (!ColoredDiv.staticCounter) ColoredDiv.staticCounter=Counter.New();
     
     	function toggle(newState) {
     		let oldState=state;
@@ -121,23 +129,28 @@ Below is a better, simpler solution with the following advantages:
     		elem=elem_;
     		state=state_
     
-    		elem.onclick = e => {
-    			e.currentTarget.style.fontSize='12px';
-    			toggle();
-    		}
+    		elem.onclick = e => toggle() ;
     		
     		toggle(state_);
+    		
+    		// update static instance counter
+    		ColoredDiv.staticCounter.next();
     	}
     	
+    	// static methods
+    	ColoredDiv.NumInstances = function() {
+    		return ColoredDiv.staticCounter.value();
+    	}
+    
     	// public interface
-    	let declaration = {
+    	let header = {
     		red,  // color elem red
     		blue, // color elem blue
     		get state() { return state; },
     		set state(s) { toggle(s); }
     	};
     	
-    	return { ctor, declaration };
+    	return { ctor, header };
     }
     
     let myDiv1=document.getElementById('myDiv1');
@@ -150,6 +163,7 @@ Below is a better, simpler solution with the following advantages:
     setTimeout( () => {
     	coloredDiv2.state=true;
     }, 1000);
+    console.log(ColoredDiv.NumInstances());
 
 ## Caviets ##
 
