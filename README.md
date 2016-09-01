@@ -143,7 +143,6 @@ Below is a better, simpler solution with the following advantages:
     let myDiv1=document.getElementById('myDiv1');
     let coloredDiv = ColoredDiv.New(myDiv1);
     console.log(coloredDiv instanceof ColoredDiv);
-    
     coloredDiv.blue();
     
     let myDiv2=document.getElementById('myDiv2');
