@@ -45,82 +45,105 @@ I came up with what I believe is a better solution with the following advantages
 **Boilerplate - Define 'New' for all functions:**
 
     if (typeof Function.prototype.New === 'undefined') {
-    	Function.prototype.New = function(...args) {
-    		let ctorContainer={ ctor: null }; 
-    		let pub=Reflect.construct(this, [ ctorContainer ]); // get public interface
-    		if (args.length>0 && !ctorContainer.ctor) throw('New with arguments but missing ctor !'); // no ctor to send arguments
-    		if (ctorContainer.ctor) ctorContainer.ctor(...args); // call ctor with arguments
-    		Object.setPrototypeOf(pub, this.prototype);
+    	Function.prototype.New= function(...args) {
+    		let opts={ ctor: null };  // ATM only ctor,
+    		let pub=Reflect.construct(this, [ opts ]); // create & get public interface
+    		Object.setPrototypeOf(pub, this.prototype); // fix prototype for instanseof
+    		if (args.length>0 && !opts.ctor) throw('New with arguments but missing ctor !'); // no ctor to send arguments
+    		if (opts.ctor) opts.ctor(...args); // call ctor with arguments
     		return pub;
     	}
     }
+
     
 **Simple class - no constructor or attributes:**
 
+    function Counter() {
+    	// private variable & methods
+    	let count=0;
     
-    function MyClass() {
-    	// private variables
-    	let privateVar=0;
-    
-    	// private methods - use ONLY arrow functions for correct 'this' binding
-    	let method = (v1, v2) => {
-    	  return privateVar+v1+v2; // do something
-    	};
+    	function next() {
+    	  return ++count;
+    	}
     	
+    	function reset(newCount) {
+    	  count=newCount;
+    	}
+    
     	// public interface
     	return {
-    		method,  // do something
-    	};
+    		next,  // get next value
+    		reset, // reset value
+    	}
     }
-      
-    let instance=MyClass.New();
-    instance.method(0, 1);
+    
+    let counter=Counter.New();
+    console.log(counter instanceof Counter);
+    counter.reset(100);
+    console.log('Counter next = '+counter.next());
+     
+
+   
 
 **Complete class - with constructor and attributes:**
 
-    function ColoredElem(ctor) {
-    	// private variables
-    	let elem, elemColor='red';
+    function ColoredDiv(opts) {
+    	// private variable & methods
+    	let elem;
+    	let state; // true=red, false=blue
     
-    	// private methods - use ONLY arrow functions for correct 'this' binding
-    	let method1 = () => {
-    		elem.style.color=elemColor;
-    		return elemColor;
-    	};
+    	function toggle(newState) {
+        let oldState=state;
+    	  if (typeof newState==='undefined') state=!state; else state=newState;
+    	  elem.style.color=(state ? 'red' : 'blue');
+    	}
     
-    	let changeColor = () => {
-    		return method1(); // call another private method
-    	};
+    	function red() {
+    	  toggle(true);
+    	}
+    	
+    	function blue() {
+    	  toggle(false);
+    	}
+    	
+    	// constructor
+    	opts.ctor = function(elem_, state_=true) {
+    	  elem=elem_;
+    	  state=state_
     
-    	// constructors must be in ctor.ctor
-    	ctor.ctor = elem_ => {
-    		elem=elem_;
-    
-    		elem.onclick = e => {
-    			e.currentTarget.style.fontSize='12px';
-    		};
-    	};
-    
+    	  elem.onclick = e => {
+    	    e.currentTarget.style.fontSize='12px';
+    	    toggle();
+    	  }
+    	  
+    	  toggle(state_);
+    	}
+    	
     	// public interface
     	return {
-    		changeColor,  // change color
-    		set color(c) { elemColor=c; }
-    	};
+    		red,  // color elem red
+    		blue, // color elem blue
+    		get state() { return state; },
+    		set state(s) { toggle(s); }
+    	}
     }
     
-    let myDiv=document.getElementById('myDiv');
-    let coloredElem=ColoredElem.New(myDiv1);
-    coloredElem.color='blue';
-    coloredElem.changeColor();
+    let myDiv1=document.getElementById('myDiv1');
+    let coloredDiv = ColoredDiv.New(myDiv1);
+    console.log(coloredDiv instanceof ColoredDiv);
+    
+    coloredDiv.blue();
 
 ## Caviets ##
 
- - constructor has to be defined with ctor.ctor so that 'New' can call it with the right arguments, a bit ugly but easy enough
+ - constructor has to be defined with opts.ctor so that 'New' can call it with the right arguments, a bit ugly but easy enough
  
  - The way the code is ATM there is not much support for inheritance, but I'm sure this can be added quite easily. Personally I am trying to avoid inheritance in favor of composition.
 
 ## Example ##
 
-See a running more elaborate example at [plunkr](https://plnkr.co/edit/aLp6Jj1MAUo8qBM7GvPs)
+See a running example at [plunkr](https://plnkr.co/edit/aLp6Jj1MAUo8qBM7GvPs)
+
+
 
 
