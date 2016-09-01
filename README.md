@@ -40,6 +40,8 @@ Below is a better, simpler solution with the following advantages:
  
  - public interface is clear and separated from the implementation as a proxy to private methods
 
+ - supports static class methods
+
 ## Code ##
 
 **Boilerplate - Define 'New' for all functions:**
