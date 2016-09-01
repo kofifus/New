@@ -45,7 +45,7 @@ I came up with what I believe is a better solution with the following advantages
 **Boilerplate - Define 'New' for all functions:**
 
     if (typeof Function.prototype.New === 'undefined') {
-    	Function.prototype.New= function(...args) {
+    	Function.prototype.New = function(...args) {
     		let ctorContainer={ ctor: null }; 
     		let pub=Reflect.construct(this, [ ctorContainer ]); // get public interface
     		if (args.length>0 && !ctorContainer.ctor) throw('New with arguments but missing ctor !'); // no ctor to send arguments
