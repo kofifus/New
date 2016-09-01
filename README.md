@@ -46,16 +46,27 @@ Below is a better, simpler solution with the following advantages:
 
     if (typeof Function.prototype.New === 'undefined') {
     	Function.prototype.New= function(...args) {
-    		let opts={ ctor: null };  // ATM only ctor
-    		let pub=Reflect.construct(this, [ opts ]); // create & get public interface
-    		Object.setPrototypeOf(pub, this.prototype); // fix prototype for instanceof
-    		if (args.length>0 && !opts.ctor) throw('New with arguments but missing ctor !'); // no ctor to send arguments
-    		if (opts.ctor) opts.ctor(...args); // call ctor with arguments
-    		return pub;
+    		// create instance 
+    		// inst can be either { f1, f2 } or { ctor: f1, declaration: { f2, f3 } }
+    		let inst=Reflect.construct(this, []); 
+    
+    		// get declaration and ctor from inst
+    		if (!inst || typeof inst!=='object' || Array.isArray(inst) || typeof inst==='function' || Object.keys(inst).length===0) throw 'New - invalid declaration';
+    		let declaration, ctor=inst.ctor;
+    		if (ctor && typeof ctor!=='function') throw 'New - invalid declaration';
+    		declaration=(ctor ? inst.declaration : inst);    
+    		if (!declaration || typeof declaration!=='object' || Array.isArray(declaration) || typeof declaration==='function' || Object.keys(declaration).length===0) throw 'New - invalid declaration';
+    		if (declaration.ctor) throw 'New - invalid declaration';
+    		Object.setPrototypeOf(declaration, this.prototype); // fix prototype for instanceof
+    		
+    		// call ctor
+    		if (args.length>0 && !ctor) throw('New - missing ctor'); // no ctor to send arguments
+    		if (ctor) ctor(...args); 
+    
+    		return declaration;
     	}
     }
 
-    
 **Simple class - no constructor or attributes:**
 
     function Counter() {
@@ -63,11 +74,11 @@ Below is a better, simpler solution with the following advantages:
     	let count=0;
     
     	function next() {
-    	  return ++count;
+    		return ++count;
     	}
     	
     	function reset(newCount) {
-    	  count=newCount;
+    		count=newCount;
     	}
     
     	// public interface
@@ -76,67 +87,73 @@ Below is a better, simpler solution with the following advantages:
     		reset, // reset value
     	}
     }
-    
+    	
     let counter=Counter.New();
-    console.log(counter instanceof Counter); // true
+    console.log(counter instanceof Counter);
+    console.log('Counter next = '+counter.next());
     counter.reset(100);
     console.log('Counter next = '+counter.next());
-     
-
-   
 
 **Complete class - with constructor and attributes:**
 
-    function ColoredDiv(opts) {
+    function ColoredDiv() {
     	// private variable & methods
     	let elem;
     	let state; // true=red, false=blue
     
     	function toggle(newState) {
-        let oldState=state;
-    	  if (typeof newState==='undefined') state=!state; else state=newState;
-    	  elem.style.color=(state ? 'red' : 'blue');
+    		let oldState=state;
+    		if (typeof newState==='undefined') state=!state; else state=newState;
+    		elem.style.color=(state ? 'red' : 'blue');
     	}
     
     	function red() {
-    	  toggle(true);
+    		toggle(true);
     	}
     	
     	function blue() {
-    	  toggle(false);
+    		toggle(false);
     	}
     	
     	// constructor
-    	opts.ctor = function(elem_, state_=true) {
-    	  elem=elem_;
-    	  state=state_
+    	function ctor(elem_, state_=true) {
+    		console.log('ctor');
+    		elem=elem_;
+    		state=state_
     
-    	  elem.onclick = e => {
-    	    e.currentTarget.style.fontSize='12px';
-    	    toggle();
-    	  }
-    	  
-    	  toggle(state_);
+    		elem.onclick = e => {
+    			e.currentTarget.style.fontSize='12px';
+    			toggle();
+    		}
+    		
+    		toggle(state_);
     	}
     	
     	// public interface
-    	return {
+    	let declaration = {
     		red,  // color elem red
     		blue, // color elem blue
     		get state() { return state; },
     		set state(s) { toggle(s); }
-    	}
+    	};
+    	
+    	return { ctor, declaration };
     }
     
     let myDiv1=document.getElementById('myDiv1');
     let coloredDiv = ColoredDiv.New(myDiv1);
-    console.log(coloredDiv instanceof ColoredDiv); // true
+    console.log(coloredDiv instanceof ColoredDiv);
+    
     coloredDiv.blue();
+    
+    let myDiv2=document.getElementById('myDiv2');
+    let coloredDiv2 = ColoredDiv.New(myDiv2, false);
+    setTimeout( () => {
+    	coloredDiv2.state=true;
+    }, 1000);
 
 ## Caviets ##
 
- - constructor has to be defined with opts.ctor so that 'New' can call it with the right arguments, a bit ugly but easy enough
- 
  - The way the code is ATM there is not much support for inheritance, but I'm sure this can be added quite easily. Personally I am trying to avoid inheritance in favor of composition.
 
 ## Example ##
