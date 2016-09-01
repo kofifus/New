@@ -46,9 +46,9 @@ Below is a better, simpler solution with the following advantages:
 
     if (typeof Function.prototype.New === 'undefined') {
     	Function.prototype.New= function(...args) {
-    		let opts={ ctor: null };  // ATM only ctor,
+    		let opts={ ctor: null };  // ATM only ctor
     		let pub=Reflect.construct(this, [ opts ]); // create & get public interface
-    		Object.setPrototypeOf(pub, this.prototype); // fix prototype for instanseof
+    		Object.setPrototypeOf(pub, this.prototype); // fix prototype for instanceof
     		if (args.length>0 && !opts.ctor) throw('New with arguments but missing ctor !'); // no ctor to send arguments
     		if (opts.ctor) opts.ctor(...args); // call ctor with arguments
     		return pub;
