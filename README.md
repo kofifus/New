@@ -44,13 +44,15 @@ I came up with what I believe is a better solution with the following advantages
 
 **Boilerplate - Define 'New' for all functions:**
 
-    Function.prototype.New = function(...args) {
-      let inst=Object.create(null); // the new instance
-      let ctorContainer={ ctor: null }; 
-      let pub=this.call(inst, ctorContainer); // get public interface
-      if (args.length>0 && !ctorContainer.ctor) throw('New with arguments but missing ctor !'); // no ctor to send arguments
-      if (ctorContainer.ctor) ctorContainer.ctor(...args); // call ctor with arguments
-      return pub;
+    if (typeof Function.prototype.New === 'undefined') {
+    	Function.prototype.New= function(...args) {
+    		let ctorContainer={ ctor: null }; 
+    		let pub=Reflect.construct(this, [ ctorContainer ]); // get public interface
+    		if (args.length>0 && !ctorContainer.ctor) throw('New with arguments but missing ctor !'); // no ctor to send arguments
+    		if (ctorContainer.ctor) ctorContainer.ctor(...args); // call ctor with arguments
+    		Object.setPrototypeOf(pub, this.prototype);
+    		return pub;
+    	}
     }
     
 **Simple class - no constructor or attributes:**
