@@ -59,8 +59,6 @@ I came up with what I believe is a better solution with the following advantages
 
     
     function MyClass() {
-    	// private interface, 'this' here is the instance
-    
     	// private variables
     	let privateVar=0;
     
