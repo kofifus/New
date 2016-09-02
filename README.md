@@ -162,6 +162,8 @@ Below is a better, simpler solution with the following advantages:
 console.log(ColoredDiv.NumInstances()); // 2
 ## Caviets ##
 
+ - You need to remember to return the ctor with the public interface. The ctor will not be available construction ends.
+
  - The way the code is ATM there is not much support for inheritance, but I'm sure this can be added quite easily. Personally I am trying to avoid inheritance in favor of composition.
 
 ## Example ##
