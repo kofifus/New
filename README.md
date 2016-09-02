@@ -42,6 +42,8 @@ Below is a better, simpler solution with the following advantages:
 
  - supports static class methods
 
+ - ctor can fail with 'false' and New will return undefined
+
 ## Code ##
 
 **Boilerplate - Define 'New' for all functions:**
@@ -57,8 +59,8 @@ Below is a better, simpler solution with the following advantages:
     		let ctor=pubInterface.ctor;
     		if (ctor && typeof ctor!=='function') throw 'New - invalid ctor';
     		if (args.length>0 && !ctor) throw('New - missing ctor'); // no ctor to send arguments
+    		if (ctor && ctor(...args)===false) return undefined; 
     		delete pubInterface.ctor; // remove ctor from interface
-    		if (ctor) ctor(...args); 
     
     		return pubInterface;
     	}
@@ -66,34 +68,34 @@ Below is a better, simpler solution with the following advantages:
 
 **Simple class - no constructor or attributes:**
 
-    function Counter() {
-    	// private variables & methods
-    	let count=0;
-    
-    	function advance() {
-    		return ++count;
-    	}
-    	
-    	function reset(newCount) {
-    		count=newCount;
-    	}
-    	
-    	function value() {
-    		return count;
-    	}
-    
-    	// public interface
-    	return {
-    		advance,  // advance counter and get new value
-    		reset, // reset value
-    		value  // get value
-    	}
-    }
-    	
-    let counter=Counter.New();
-    console.log(counter instanceof Counter); // true
-    counter.reset(100);
-    console.log('Counter next = '+counter.advance()); // 101
+function Counter() {
+	// private variables & methods
+	let count=0;
+
+	function advance() {
+		return ++count;
+	}
+	
+	function reset(newCount) {
+		count=(newCount || 0);
+	}
+	
+	function value() {
+		return count;
+	}
+
+	// public interface
+	return {
+		advance,  // advance counter and get new value
+		reset, // reset value
+		value  // get value
+	}
+}
+	
+let counter=Counter.New();
+console.log(counter instanceof Counter); // true
+counter.reset(100);
+console.log('Counter next = '+counter.advance()); // 101
 
 **Complete class - with constructor, attributes & static methods:**
 
@@ -121,7 +123,7 @@ Below is a better, simpler solution with the following advantages:
     	
     	// constructor
     	function ctor(elem_, state_=true) {
-    		console.log('ctor');
+    		if (!elem_ || !elem_.tagName) return false;
     		elem=elem_;
     		state=state_
     
@@ -158,8 +160,11 @@ Below is a better, simpler solution with the following advantages:
     setTimeout( () => {
     	coloredDiv2.state=true;
     }, 1000);
+    console.log(ColoredDiv.NumInstances()); // 2
+    
+    let coloredDiv3 = ColoredDiv.New();
+    console.log(coloredDiv3); // undefined
 
-console.log(ColoredDiv.NumInstances()); // 2
 ## Caviets ##
 
  - You need to remember to return the ctor with the public interface. The ctor will not be available construction ends.
@@ -169,6 +174,8 @@ console.log(ColoredDiv.NumInstances()); // 2
 ## Example ##
 
 See a running example at [plunkr](https://plnkr.co/edit/aLp6Jj1MAUo8qBM7GvPs)
+
+
 
 
 
