@@ -48,24 +48,19 @@ Below is a better, simpler solution with the following advantages:
 
     if (typeof Function.prototype.New === 'undefined') {
     	Function.prototype.New= function(...args) {
-    		// create instance 
-    		// inst can be either { f1, f2 } or { ctor: f1, header: { f2, f3 } }
-    		let inst=Reflect.construct(this, []); 
+    		// create instance & get interface
+    		let pubInterface=Reflect.construct(this, []); 
+    		if (!pubInterface || typeof pubInterface!=='object' || Array.isArray(pubInterface) || typeof pubInterface==='function' || Object.keys(pubInterface).length===0) throw 'New - invalid interface';
+    		Object.setPrototypeOf(pubInterface, this.prototype); // fix prototype for instanceof
     
-    		// get header and ctor from inst
-    		if (!inst || typeof inst!=='object' || Array.isArray(inst) || typeof inst==='function' || Object.keys(inst).length===0) throw 'New - invalid header';
-    		let header, ctor=inst.ctor;
-    		if (ctor && typeof ctor!=='function') throw 'New - invalid header';
-    		header=(ctor ? inst.header : inst);    
-    		if (!header || typeof header!=='object' || Array.isArray(header) || typeof header==='function' || Object.keys(header).length===0) throw 'New - invalid header';
-    		if (header.ctor) throw 'New - invalid header';
-    		Object.setPrototypeOf(header, this.prototype); // fix prototype for instanceof
-    		
-    		// call ctor
+    		// ctor
+    		let ctor=pubInterface.ctor;
+    		if (ctor && typeof ctor!=='function') throw 'New - invalid ctor';
     		if (args.length>0 && !ctor) throw('New - missing ctor'); // no ctor to send arguments
+    		delete pubInterface.ctor; // remove ctor from interface
     		if (ctor) ctor(...args); 
     
-    		return header;
+    		return pubInterface;
     	}
     }
 
@@ -75,7 +70,7 @@ Below is a better, simpler solution with the following advantages:
     	// private variables & methods
     	let count=0;
     
-    	function next() {
+    	function advance() {
     		return ++count;
     	}
     	
@@ -89,17 +84,16 @@ Below is a better, simpler solution with the following advantages:
     
     	// public interface
     	return {
-    		next,  // get next value
+    		advance,  // advance counter and get new value
     		reset, // reset value
     		value  // get value
     	}
     }
     	
     let counter=Counter.New();
-    console.log(counter instanceof Counter);
-    console.log('Counter next = '+counter.next());
+    console.log(counter instanceof Counter); // true
     counter.reset(100);
-    console.log('Counter next = '+counter.next());
+    console.log('Counter next = '+counter.advance()); // 101
 
 **Complete class - with constructor, attributes & static methods:**
 
@@ -136,7 +130,7 @@ Below is a better, simpler solution with the following advantages:
     		toggle(state_);
     		
     		// update static instance counter
-    		ColoredDiv.staticCounter.next();
+    		ColoredDiv.staticCounter.advance();
     	}
     	
     	// static methods
@@ -145,19 +139,18 @@ Below is a better, simpler solution with the following advantages:
     	}
     
     	// public interface
-    	let header = {
+    	return {
+    		ctor,
     		red,  // color elem red
     		blue, // color elem blue
     		get state() { return state; },
     		set state(s) { toggle(s); }
     	};
-    	
-    	return { ctor, header };
     }
     
     let myDiv1=document.getElementById('myDiv1');
     let coloredDiv = ColoredDiv.New(myDiv1);
-    console.log(coloredDiv instanceof ColoredDiv);
+    console.log(coloredDiv instanceof ColoredDiv); // true
     coloredDiv.blue();
     
     let myDiv2=document.getElementById('myDiv2');
@@ -165,8 +158,8 @@ Below is a better, simpler solution with the following advantages:
     setTimeout( () => {
     	coloredDiv2.state=true;
     }, 1000);
-    console.log(ColoredDiv.NumInstances());
 
+console.log(ColoredDiv.NumInstances()); // 2
 ## Caviets ##
 
  - The way the code is ATM there is not much support for inheritance, but I'm sure this can be added quite easily. Personally I am trying to avoid inheritance in favor of composition.
@@ -174,6 +167,8 @@ Below is a better, simpler solution with the following advantages:
 ## Example ##
 
 See a running example at [plunkr](https://plnkr.co/edit/aLp6Jj1MAUo8qBM7GvPs)
+
+
 
 
 
