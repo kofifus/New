@@ -92,8 +92,8 @@ Below is a better, simpler solution with the following advantages:
     					if (!header.hasOwnProperty(key)) Object.defineProperty(header, key, Object.getOwnPropertyDescriptor(aHeader, key));
     				});
     			});
+    			delete header.compose;
     		}
-    		delete header.compose;
     
     		// ctor
     		let ctor=header.ctor;
