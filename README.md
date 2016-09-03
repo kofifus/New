@@ -57,7 +57,7 @@ Below is a better, simpler solution with the following advantages:
 
  - define static 'class' methods on the class itself - `C.staticM = function(..)`. Do not add them to the public interface or use 'this' inside them.
 
- - create an instance with 'New' - `var o=C.New(..);
+ - create an instance with 'New' - `let o=C.New(..);
  - for composition return a 'New' 'class' or array of classes from the ctor: ` 
 
      - `return ClassToCompose.New(..);` 
