@@ -280,6 +280,8 @@ Below is a better, simpler solution with the following advantages:
 
  - You need to remember to return the ctor with the public interface. The ctor will not be available after construction ends.
 
+ - You cannot use shorthand syntax for private methods.
+
  - This pattern does not work well with inheritance, that is an object created with Derived.New() cannot access methods from Base. Personally I am trying to avoid inheritance (see [here](https://javascriptweblog.wordpress.com/2010/12/22/delegation-vs-inheritance-in-javascript/)) and use composition.
 
 ## Example ##
