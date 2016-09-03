@@ -50,52 +50,56 @@ Below is a better, simpler solution with the following advantages:
 
     if (typeof Function.prototype.New === 'undefined') {
     	Function.prototype.New= function(...args) {
-    		// create instance & get interface
-    		let pubInterface=Reflect.construct(this, []); 
-    		if (!pubInterface || typeof pubInterface!=='object' || Array.isArray(pubInterface) || typeof pubInterface==='function' || Object.keys(pubInterface).length===0) throw 'New - invalid interface';
-    		Object.setPrototypeOf(pubInterface, this.prototype); // fix prototype for instanceof
+    		// create instance
+    		let inst=Object.create(this.prototype);
     
+    		// get public interface
+    		let header=this.call(inst);
+    		if (!header || typeof header!=='object' || Array.isArray(header) || typeof header==='function' || Object.keys(header).length===0) throw 'New - invalid interface';
+    		Object.setPrototypeOf(header, this.prototype); // fix prototype for instanceof
+    		
     		// ctor
-    		let ctor=pubInterface.ctor;
+    		let ctor=header.ctor;
     		if (ctor && typeof ctor!=='function') throw 'New - invalid ctor';
     		if (args.length>0 && !ctor) throw('New - missing ctor'); // no ctor to send arguments
-    		if (ctor && ctor(...args)===false) return undefined; 
-    		delete pubInterface.ctor; // remove ctor from interface
+    		if (ctor && ctor.call(inst, ...args)===false) return undefined; // call ctor
+    		delete header.ctor; // remove ctor from interface
     
-    		return pubInterface;
+    		return header;
     	}
     }
 
 **Simple class - no constructor or attributes:**
 
-function Counter() {
-	// private variables & methods
-	let count=0;
-
-	function advance() {
-		return ++count;
-	}
-	
-	function reset(newCount) {
-		count=(newCount || 0);
-	}
-	
-	function value() {
-		return count;
-	}
-
-	// public interface
-	return {
-		advance,  // advance counter and get new value
-		reset, // reset value
-		value  // get value
-	}
-}
-	
-let counter=Counter.New();
-console.log(counter instanceof Counter); // true
-counter.reset(100);
-console.log('Counter next = '+counter.advance()); // 101
+    function Counter() {
+    	// private variables & methods
+    	let count=0;
+    
+    	function advance() {
+    		return ++count;
+    	}
+    	
+    	function reset(newCount) {
+    		count=(newCount || 0);
+    	}
+    	
+    	function value() {
+    		return count;
+    	}
+    
+    	// public interface
+    	return {
+    		advance,  // advance counter and get new value
+    		reset, // reset value
+    		value  // get value
+    	}
+    }
+    	
+    let counter=Counter.New();
+    console.log(counter instanceof Counter); // true
+    counter.reset(100);
+    console.log('Counter next = '+counter.advance()); // 101
+    console.log(Object.getOwnPropertyNames(counter)); // ["advance", "reset", "value"]
 
 **Complete class - with constructor, attributes & static methods:**
 
@@ -123,6 +127,7 @@ console.log('Counter next = '+counter.advance()); // 101
     	
     	// constructor
     	function ctor(elem_, state_=true) {
+    		//console.log(this instanceof ColoredDiv); // true
     		if (!elem_ || !elem_.tagName) return false;
     		elem=elem_;
     		state=state_
@@ -160,20 +165,22 @@ console.log('Counter next = '+counter.advance()); // 101
     setTimeout( () => {
     	coloredDiv2.state=true;
     }, 1000);
-    console.log(ColoredDiv.NumInstances()); // 2
     
     let coloredDiv3 = ColoredDiv.New();
     console.log(coloredDiv3); // undefined
+    
+    console.log(ColoredDiv.NumInstances()); // 2
 
 ## Caviets ##
 
- - You need to remember to return the ctor with the public interface. The ctor will not be available construction ends.
+ - You need to remember to return the ctor with the public interface. The ctor will not be available after construction ends.
 
- - The way the code is ATM there is not much support for inheritance, but I'm sure this can be added quite easily. Personally I am trying to avoid inheritance in favor of composition.
+ - This pattern does not work well with inheritance, that is an object created with Derived.New() cannot access methods from Base. Personally I am trying to avoid inheritance (see [here](https://javascriptweblog.wordpress.com/2010/12/22/delegation-vs-inheritance-in-javascript/)) and use composition.
 
 ## Example ##
 
-See a running example at [plunkr](https://plnkr.co/edit/aLp6Jj1MAUo8qBM7GvPs)
+See a running example at [plunkr](https://plnkr.co/edit/klYYYRMmfmwhiokb9hxI)
+
 
 
 
