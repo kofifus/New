@@ -81,7 +81,8 @@ Below is a better, simpler solution with the following advantages:
     	}
     }
 
-**Simple class - no constructor or attributes:**
+## Examples ## 
+**Simple class - no constructor**
 
     function Counter() {
     	// private variables & methods
@@ -113,7 +114,7 @@ Below is a better, simpler solution with the following advantages:
     console.log('Counter next = '+counter.advance()); // 101
     console.log(Object.getOwnPropertyNames(counter)); // ["advance", "reset", "value"]
 
-**Complete class - with constructor, attributes & static methods:**
+**Complete class (with constructor, attributes, static methods)**
 
     function ColoredDiv() {
     	// private variables & methods
