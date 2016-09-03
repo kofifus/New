@@ -51,9 +51,10 @@ Below is a better, simpler solution with the following advantages:
 
  - if you need a constructor define a 'ctor' method and return it with the public interface. 'New' will call 'ctor' with the arguments passed to 'New'.
 
- - 'ctor' can return 'false' to abort construction and New will return 'undefined'
+ - 'ctor' can return 'false' to abort construction and 'New' will return 'undefined'
 
- - define static 'class' methods on the class itself - `C.staticM = function(..)`. Do not add them to the public interface.
+ - define static 'class' methods on the class itself - `C.staticM = function(..)`. Do not add them to the public interface or use 'this' inside them.
+
  - create an instance with 'New' - `var o=C.New(..);`
 
 
