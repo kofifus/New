@@ -43,6 +43,10 @@ Below is a better, simpler solution with the following advantages:
 
  - ctor can fail with 'false' and New will return undefined
 
+ - easy support for composition
+
+
+
 ## Usage ##
 
  - a 'class' is a function with no parameters - `function C()`
@@ -55,8 +59,11 @@ Below is a better, simpler solution with the following advantages:
 
  - define static 'class' methods on the class itself - `C.staticM = function(..)`. Do not add them to the public interface or use 'this' inside them.
 
- - create an instance with 'New' - `var o=C.New(..);`
-
+ - create an instance with 'New' - `var o=C.New(..);
+ - for composition add 'compose:' to the public interface with either
+  - a 'class': `compose: C`
+  - a 'class' with ctor arguments: `compose: [C, v1, ..]`
+  - multiple 'classes': `compose: [C1, [C2, v1, ..], C3]`
 
 ## Code ##
 
@@ -72,6 +79,22 @@ Below is a better, simpler solution with the following advantages:
     		if (!header || typeof header!=='object' || Array.isArray(header) || typeof header==='function' || Object.keys(header).length===0) throw 'New - invalid interface';
     		Object.setPrototypeOf(header, this.prototype); // fix prototype for instanceof
     		
+    		// compose
+    		if (header.compose) {
+    			let compose=header.compose;
+    			if (typeof compose==='function') compose=[ compose ]; // compose: C
+    			if (Array.isArray(compose) && (compose.length==1 || (typeof compose[0]==='function' && typeof compose[1]!=='function' && !Array.isArray(compose[1])))) compose=[ compose ]; // compose: [ C, v1 ]
+    			compose.forEach(a => { 
+    				if (!Array.isArray(a) && typeof a==='function') a=[a]; // compos: [ C, [C1, v1 ] ]
+    				if (!Array.isArray(a)) throw 'New - invalid compose clause'; 
+    				let [aClass, ...aArgs]=a, aHeader=aClass.New(...aArgs), props = Object.getOwnPropertyNames(aHeader);
+    				props.forEach(function(key) {
+    					if (!header.hasOwnProperty(key)) Object.defineProperty(header, key, Object.getOwnPropertyDescriptor(aHeader, key));
+    				});
+    			});
+    		}
+    		delete header.compose;
+    
     		// ctor
     		let ctor=header.ctor;
     		if (ctor && typeof ctor!=='function') throw 'New - invalid ctor';
@@ -187,6 +210,137 @@ Below is a better, simpler solution with the following advantages:
     
     console.log(ColoredDiv.NumInstances()); // 2
 
+**composition**
+
+    // class with no ctor
+    function C1() {
+    	let v=1;
+    	
+    	function getC1V() {
+    		return v;
+    	}
+    	
+    	function getV() {
+    		return v;
+    	}
+    	
+    	return {
+    		getC1V,
+    		getV
+    	};
+    }
+    
+    // class with ctor
+    function C2() {
+    	let v;
+    	
+    	function getC2V() {
+    		return v;
+    	}
+    	
+    	function getV() {
+    		return v;
+    	}
+    	
+    	function ctor(v_) {
+    		v=(v_ || -1);
+    	}
+    	
+    	return {
+    		ctor,
+    		getC2V,
+    		getV
+    	};
+    }
+    
+    // class with ctor and composed with C1
+    function C3() {
+    	let v;
+    	
+    	function getC3V() {
+    		return v;
+    	}
+    	
+    	function getV() {
+    		return v;
+    	}
+    	
+    	function ctor(v_) {
+    		v=(v_ || -1);
+    	}
+    	
+    	return {
+    		ctor,
+    		compose: C1,
+    		getC3V,
+    		getV
+    	};
+    }
+    
+    // class with ctor and composed with C2(2)
+    function C4() {
+    	let v;
+    	
+    	function getC4V() {
+    		return v;
+    	}
+    	
+    	function getV() {
+    		return v;
+    	}
+    	
+    	function ctor(v_) {
+    		v=(v_ || -1);
+    	}
+    	
+    	return {
+    		ctor,
+    		compose: [C2, 2],
+    		getC4V,
+    		getV
+    	};
+    }
+    
+    // class with ctor and composed with C1 and C2(2)
+    function C5() {
+    	let v;
+    	
+    	function getC5V() {
+    		return v;
+    	}
+    	
+    	function getV() {
+    		return v;
+    	}
+    	
+    	function ctor(v_) {
+    		v=(v_ || -1);
+    	}
+    	
+    	return {
+    		ctor,
+    		compose: [C1, [C2, 2]],
+    		getC5V,
+    		getV
+    	};
+    }
+    
+    let c3=C3.New(3); // compose: C1
+    console.log('c3 C1V = '+c3.getC1V()); // c3 C1V = 1
+    console.log('c3 C3V = '+c3.getC3V()); // c3 C3V = 3
+    console.log('c3 V = '+c3.getV());     // c3 V = 3
+    
+    let c4=C4.New(4); // compose: [C2, 2]
+    console.log('c4 C2V = '+c4.getC2V()); // c4 C2V = 2
+    console.log('c4 C4V = '+c4.getC4V()); // c4 C4V = 4
+    console.log('c4 V = '+c4.getV());     // c4 V = 4
+    
+    let c5=C5.New(5); // compose: [C1, [C2, 2]]
+    console.log('c5 C1V = '+c5.getC1V()); // c5 C1V = 1
+    console.log('c5 C2V = '+c5.getC2V()); // c5 C2V = 2
+    console.log('c5 C5V = '+c5.getC5V()); // c5 C5V = 5
+    console.log('c5 V = '+c5.getV());     // c5 V = 5
+
 ## Caviets ##
 
  - You need to remember to return the ctor with the public interface. The ctor will not be available after construction ends.
@@ -195,7 +349,10 @@ Below is a better, simpler solution with the following advantages:
 
 ## Example ##
 
-See a running example at [plunkr](https://plnkr.co/edit/klYYYRMmfmwhiokb9hxI)
+See a running example at [plunkr](https://plnkr.co/edit/MUnQABDe5seoVlXOrqfQ)
+
+
+
 
 
 
