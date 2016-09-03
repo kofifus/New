@@ -49,6 +49,8 @@ Below is a better, simpler solution with the following advantages:
 
 ## Usage ##
 
+ - `<script src="https://rawgit.com/kofifus/BetterES6Classes/master/new.js"></script>`
+
  - a 'class' is a function with no parameters - `function C()`
  
  - return a dictionary of public methods (the puclic interface) from 'class'
@@ -60,51 +62,11 @@ Below is a better, simpler solution with the following advantages:
  - define static 'class' methods on the class itself - `C.staticM = function(..)`. Do not add them to the public interface or use 'this' inside them.
 
  - create an instance with 'New' - `var o=C.New(..);
- - for composition add 'compose:' to the public interface with either
-  - a 'class': `compose: C`
-  - a 'class' with ctor arguments: `compose: [C, v1, ..]`
-  - multiple 'classes': `compose: [C1, [C2, v1, ..], C3]`
+ - for composition return a 'New' 'class' or array of classes from the ctor: ` 
 
-## Code ##
+     - `return ClassToCompose.New(..);` 
+     - `return [CtoCompose1.New(..), CtoCompose2.New(..)];`
 
-**Boilerplate - Define 'New' for all functions:**
-
-    if (typeof Function.prototype.New === 'undefined') {
-    	Function.prototype.New= function(...args) {
-    		// create instance
-    		let inst=Object.create(this.prototype);
-    
-    		// get public interface
-    		let header=this.call(inst);
-    		if (!header || typeof header!=='object' || Array.isArray(header) || typeof header==='function' || Object.keys(header).length===0) throw 'New - invalid interface';
-    		Object.setPrototypeOf(header, this.prototype); // fix prototype for instanceof
-    		
-    		// compose
-    		if (header.compose) {
-    			let compose=header.compose;
-    			if (typeof compose==='function') compose=[ compose ]; // compose: C
-    			if (Array.isArray(compose) && (compose.length==1 || (typeof compose[0]==='function' && typeof compose[1]!=='function' && !Array.isArray(compose[1])))) compose=[ compose ]; // compose: [ C, v1 ]
-    			compose.forEach(a => { 
-    				if (!Array.isArray(a) && typeof a==='function') a=[a]; // compose: [ C, [C1, v1 ] ]
-    				if (!Array.isArray(a)) throw 'New - invalid compose clause'; 
-    				let [aClass, ...aArgs]=a, aHeader=aClass.New(...aArgs), props = Object.getOwnPropertyNames(aHeader);
-    				props.forEach(function(key) {
-    					if (!header.hasOwnProperty(key)) Object.defineProperty(header, key, Object.getOwnPropertyDescriptor(aHeader, key));
-    				});
-    			});
-    			delete header.compose;
-    		}
-    
-    		// ctor
-    		let ctor=header.ctor;
-    		if (ctor && typeof ctor!=='function') throw 'New - invalid ctor';
-    		if (args.length>0 && !ctor) throw('New - missing ctor'); // no ctor to send arguments
-    		if (ctor && ctor.call(inst, ...args)===false) return undefined; // call ctor
-    		delete header.ctor; // remove ctor from interface
-    
-    		return header;
-    	}
-    }
 
 ## Examples##
 **Simple class - no constructor**
@@ -212,7 +174,6 @@ Below is a better, simpler solution with the following advantages:
 
 **composition**
 
-    // class with no ctor
     function C1() {
     	let v=1;
     	
@@ -267,11 +228,11 @@ Below is a better, simpler solution with the following advantages:
     	
     	function ctor(v_) {
     		v=(v_ || -1);
+    		return C1.New(); // compose C1
     	}
     	
     	return {
     		ctor,
-    		compose: C1,
     		getC3V,
     		getV
     	};
@@ -291,17 +252,17 @@ Below is a better, simpler solution with the following advantages:
     	
     	function ctor(v_) {
     		v=(v_ || -1);
+    		return C2.New(v-2); // compose C2
     	}
-    	
+    
     	return {
     		ctor,
-    		compose: [C2, 2],
     		getC4V,
     		getV
     	};
     }
     
-    // class with ctor and composed with C1 and C2(2)
+    // class with ctor and composed with C1 and C4(4)
     function C5() {
     	let v;
     	
@@ -315,29 +276,30 @@ Below is a better, simpler solution with the following advantages:
     	
     	function ctor(v_) {
     		v=(v_ || -1);
+    		return [C1.New(), C4.New(v-1)]; // compose C1 & C4
     	}
     	
     	return {
     		ctor,
-    		compose: [C1, [C2, 2]],
     		getC5V,
     		getV
     	};
     }
     
     let c3=C3.New(3); // compose: C1
-    console.log('c3 C1V = '+c3.getC1V()); // c3 C1V = 1
+    console.log('c3 C1V = '+c3.getC1V()); // c3 C1V = 1 from composing C1
     console.log('c3 C3V = '+c3.getC3V()); // c3 C3V = 3
     console.log('c3 V = '+c3.getV());     // c3 V = 3
     
-    let c4=C4.New(4); // compose: [C2, 2]
-    console.log('c4 C2V = '+c4.getC2V()); // c4 C2V = 2
+    let c4=C4.New(4); // compose: [ C2, 2 ]
+    console.log('c4 C2V = '+c4.getC2V()); // c4 C2V = 2 from composing C2
     console.log('c4 C4V = '+c4.getC4V()); // c4 C4V = 4
     console.log('c4 V = '+c4.getV());     // c4 V = 4
     
-    let c5=C5.New(5); // compose: [C1, [C2, 2]]
-    console.log('c5 C1V = '+c5.getC1V()); // c5 C1V = 1
-    console.log('c5 C2V = '+c5.getC2V()); // c5 C2V = 2
+    let c5=C5.New(5); // compose: [ C1, [C4, 4] ]
+    console.log('c5 C1V = '+c5.getC1V()); // c5 C1V = 1 from composing C1
+    console.log('c5 C2V = '+c5.getC2V()); // c5 C2V = 2 from composing C4
+    console.log('c5 C4V = '+c5.getC4V()); // c5 C4V = 4 from composing C4
     console.log('c5 C5V = '+c5.getC5V()); // c5 C5V = 5
     console.log('c5 V = '+c5.getV());     // c5 V = 5
 
@@ -350,6 +312,7 @@ Below is a better, simpler solution with the following advantages:
 ## Example ##
 
 See a running example at [plunkr](https://plnkr.co/edit/MUnQABDe5seoVlXOrqfQ)
+
 
 
 
