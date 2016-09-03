@@ -174,6 +174,7 @@ Below is a better, simpler solution with the following advantages:
 
 **composition**
 
+    // class with no ctor
     function C1() {
     	let v=1;
     	
@@ -214,7 +215,7 @@ Below is a better, simpler solution with the following advantages:
     	};
     }
     
-    // class with ctor and composed with C1
+    // class with ctor and composed with C2(2)
     function C3() {
     	let v;
     	
@@ -228,9 +229,9 @@ Below is a better, simpler solution with the following advantages:
     	
     	function ctor(v_) {
     		v=(v_ || -1);
-    		return C1.New(); // compose C1
+    		return C2.New(v-1); // compose C2
     	}
-    	
+    
     	return {
     		ctor,
     		getC3V,
@@ -238,7 +239,7 @@ Below is a better, simpler solution with the following advantages:
     	};
     }
     
-    // class with ctor and composed with C2(2)
+    // class with ctor and composed with C1 and C3(3)
     function C4() {
     	let v;
     	
@@ -252,9 +253,9 @@ Below is a better, simpler solution with the following advantages:
     	
     	function ctor(v_) {
     		v=(v_ || -1);
-    		return C2.New(v-2); // compose C2
+    		return [C1.New(), C3.New(v-1)]; // compose C1 & C3
     	}
-    
+    	
     	return {
     		ctor,
     		getC4V,
@@ -262,46 +263,18 @@ Below is a better, simpler solution with the following advantages:
     	};
     }
     
-    // class with ctor and composed with C1 and C4(4)
-    function C5() {
-    	let v;
-    	
-    	function getC5V() {
-    		return v;
-    	}
-    	
-    	function getV() {
-    		return v;
-    	}
-    	
-    	function ctor(v_) {
-    		v=(v_ || -1);
-    		return [C1.New(), C4.New(v-1)]; // compose C1 & C4
-    	}
-    	
-    	return {
-    		ctor,
-    		getC5V,
-    		getV
-    	};
-    }
     
-    let c3=C3.New(3); // compose: C1
-    console.log('c3 C1V = '+c3.getC1V()); // c3 C1V = 1 from composing C1
-    console.log('c3 C3V = '+c3.getC3V()); // c3 C3V = 3
-    console.log('c3 V = '+c3.getV());     // c3 V = 3
+    let c3=C3.New(3); // composed with C2
+    console.log('c3 C2V = '+c3.getC2V()); // 2 from composing C2
+    console.log('c3 C3V = '+c3.getC3V()); // 3
+    console.log('c3 V = '+c3.getV());     // 3
     
-    let c4=C4.New(4); // compose: [ C2, 2 ]
-    console.log('c4 C2V = '+c4.getC2V()); // c4 C2V = 2 from composing C2
-    console.log('c4 C4V = '+c4.getC4V()); // c4 C4V = 4
-    console.log('c4 V = '+c4.getV());     // c4 V = 4
-    
-    let c5=C5.New(5); // compose: [ C1, [C4, 4] ]
-    console.log('c5 C1V = '+c5.getC1V()); // c5 C1V = 1 from composing C1
-    console.log('c5 C2V = '+c5.getC2V()); // c5 C2V = 2 from composing C4
-    console.log('c5 C4V = '+c5.getC4V()); // c5 C4V = 4 from composing C4
-    console.log('c5 C5V = '+c5.getC5V()); // c5 C5V = 5
-    console.log('c5 V = '+c5.getV());     // c5 V = 5
+    let c4=C4.New(4); // composed with C1 & C3
+    console.log('c4 C1V = '+c4.getC1V()); // 1 from composing C1
+    console.log('c4 C2V = '+c4.getC2V()); // 2 from composing C3
+    console.log('c4 C3V = '+c4.getC3V()); // 3 from composing C3
+    console.log('c4 C4V = '+c4.getC4V()); // 4
+    console.log('c4 V = '+c4.getV());     // 4
 
 ## Caviets ##
 
@@ -312,6 +285,7 @@ Below is a better, simpler solution with the following advantages:
 ## Example ##
 
 See a running example at [plunkr](https://plnkr.co/edit/MUnQABDe5seoVlXOrqfQ)
+
 
 
 
