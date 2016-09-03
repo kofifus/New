@@ -17,9 +17,8 @@ if (typeof Function.prototype.New === 'undefined') {
 		if (args.length>0 && !ctor) throw('New - missing ctor'); // no ctor to send arguments
 		if (ctor) {
 			composed=ctor.call(inst, ...args);
-			if (composed===false) return undefined; // aborted
+			delete header.ctor; // remove ctor from interface
 		}
-		delete header.ctor; // remove ctor from interface
 
 		// compose
 		if (composed) {
