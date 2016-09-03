@@ -41,8 +41,6 @@ Below is a better, simpler solution with the following advantages:
 
  - supports static class methods
 
- - ctor can fail with 'false' and New will return undefined
-
  - easy support for composition
 
 
@@ -103,6 +101,10 @@ Below is a better, simpler solution with the following advantages:
 
 **Complete class (with constructor, attributes, static methods)**
 
+// Complete class - with constructor, attributes & static methods
+
+
+
     function ColoredDiv() {
     	// private variables & methods
     	let elem;
@@ -128,7 +130,7 @@ Below is a better, simpler solution with the following advantages:
     	// constructor
     	function ctor(elem_, state_=true) {
     		//console.log(this instanceof ColoredDiv); // true
-    		if (!elem_ || !elem_.tagName) return false;
+    		if (!elem_ || !elem_.tagName) throw 'ColoredDiv ctor invalid params';
     		elem=elem_;
     		state=state_
     
@@ -166,9 +168,6 @@ Below is a better, simpler solution with the following advantages:
     setTimeout( () => {
     	coloredDiv2.state=true;
     }, 1000);
-    
-    let coloredDiv3 = ColoredDiv.New();
-    console.log(coloredDiv3); // undefined
     
     console.log(ColoredDiv.NumInstances()); // 2
 
@@ -287,6 +286,7 @@ Below is a better, simpler solution with the following advantages:
 ## Example ##
 
 See a running example at [plunkr](https://plnkr.co/edit/MUnQABDe5seoVlXOrqfQ)
+
 
 
 
