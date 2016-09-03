@@ -85,7 +85,7 @@ Below is a better, simpler solution with the following advantages:
     			if (typeof compose==='function') compose=[ compose ]; // compose: C
     			if (Array.isArray(compose) && (compose.length==1 || (typeof compose[0]==='function' && typeof compose[1]!=='function' && !Array.isArray(compose[1])))) compose=[ compose ]; // compose: [ C, v1 ]
     			compose.forEach(a => { 
-    				if (!Array.isArray(a) && typeof a==='function') a=[a]; // compos: [ C, [C1, v1 ] ]
+    				if (!Array.isArray(a) && typeof a==='function') a=[a]; // compose: [ C, [C1, v1 ] ]
     				if (!Array.isArray(a)) throw 'New - invalid compose clause'; 
     				let [aClass, ...aArgs]=a, aHeader=aClass.New(...aArgs), props = Object.getOwnPropertyNames(aHeader);
     				props.forEach(function(key) {
