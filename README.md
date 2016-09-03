@@ -54,6 +54,7 @@ Below is a better, simpler solution with the following advantages:
  - 'ctor' can return 'false' to abort construction and New will return 'undefined'
 
  - define static 'class' methods on the class itself - `C.staticM = function(..)`. Do not add them to the public interface.
+ - create an instance with 'New' - `var o=C.New(..);`
 
 
 ## Code ##
