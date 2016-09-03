@@ -81,7 +81,7 @@ Below is a better, simpler solution with the following advantages:
     	}
     }
 
-## Examples ## 
+## Examples##
 **Simple class - no constructor**
 
     function Counter() {
