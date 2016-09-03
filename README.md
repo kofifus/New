@@ -28,8 +28,7 @@ I ended up dissatisfied with all of these solutions for the following reasons:
 
  - No clear separation of the public interface (proxy) of the class from the implementation
 
-Solution
----------
+## Solution ##
 Below is a better, simpler solution with the following advantages:
 
  - no need for 'this._', that/self, weakmaps, symbols etc. Clear and straightforward 'class' code 
@@ -43,6 +42,19 @@ Below is a better, simpler solution with the following advantages:
  - supports static class methods
 
  - ctor can fail with 'false' and New will return undefined
+
+## Usage ##
+
+ - a 'class' is a function with no parameters - `function C()`
+ 
+ - return a dictionary of public methods (the puclic interface) from 'class'
+
+ - if you need a constructor define a 'ctor' method and return it with the public interface. 'New' will call 'ctor' with the arguments passed to it.
+
+ - 'ctor' can return 'false' to abort construction and New will return 'undefined'
+
+ - define static 'class' methods on the class itself - `C.staticM = function(..)`. Do not add them to the public interface.
+
 
 ## Code ##
 
@@ -132,6 +144,7 @@ Below is a better, simpler solution with the following advantages:
     		elem=elem_;
     		state=state_
     
+    		// use e.currentTarget instead of 'this' in event handlers
     		elem.onclick = e => toggle() ;
     		
     		toggle(state_);
