@@ -49,7 +49,7 @@ Below is a better, simpler solution with the following advantages:
  
  - return a dictionary of public methods (the puclic interface) from 'class'
 
- - if you need a constructor define a 'ctor' method and return it with the public interface. 'New' will call 'ctor' with the arguments passed to it.
+ - if you need a constructor define a 'ctor' method and return it with the public interface. 'New' will call 'ctor' with the arguments passed to 'New'.
 
  - 'ctor' can return 'false' to abort construction and New will return 'undefined'
 
