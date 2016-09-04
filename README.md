@@ -164,9 +164,7 @@ Below is a better, simpler solution with the following advantages:
     
     let myDiv2=document.getElementById('myDiv2');
     let coloredDiv2 = ColoredDiv.New(myDiv2, false);
-    setTimeout( () => {
-    	coloredDiv2.state=true;
-    }, 1000);
+    setTimeout( () => {	coloredDiv2.state=true; }, 1000);
     
     console.log(ColoredDiv.NumInstances()); // 2
 
