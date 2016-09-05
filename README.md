@@ -47,17 +47,15 @@ Below is a better, simpler solution with the following advantages:
 
  - `<script src="https://rawgit.com/kofifus/BetterES6Classes/master/new.js"></script>`
 
- - a 'class' is a function with no parameters - `function C()`
+ - a class is a function with no parameters - `function C()`
  
  - return a dictionary of public methods (the puclic interface) from 'class'
 
  - if you need a constructor define a 'ctor' method and return it with the public interface. 'New' will call 'ctor' with the arguments passed to 'New'.
 
- - define static 'class' methods on the class itself - `C.staticM = function(..)`. Do not add them to the public interface or use 'this' inside them.
-
  - create an instance with New - `let o=C.New(..);`
 
- - for composition return a 'New'ed class or array of classes from the ctor: ` 
+ - for composition return a 'New'ed class or array of classes from the 'ctor': ` 
 
      - `return ClassToCompose.New(..);` 
      - `return [CtoCompose1.New(..), CtoCompose2.New(..)];`
