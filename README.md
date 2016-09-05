@@ -39,8 +39,6 @@ Below is a better, simpler solution with the following advantages:
  
  - public interface is clear and separated from the implementation as a proxy to private methods
 
- - supports static class methods
-
  - easy support for composition
 
 
@@ -98,19 +96,12 @@ Below is a better, simpler solution with the following advantages:
     console.log('Counter next = '+counter.advance()); // 101
     console.log(Object.getOwnPropertyNames(counter)); // ["advance", "reset", "value"]
 
-**Complete class (with constructor, attributes, static methods)**
-
-// Complete class - with constructor, attributes & static methods
-
-
+**Complete class with a constructor & attributes)**
 
     function ColoredDiv() {
     	// private variables & methods
     	let elem;
     	let state; // true=red, false=blue
-    
-    	// create static instance counter
-    	if (!ColoredDiv.staticCounter) ColoredDiv.staticCounter=Counter.New();
     
     	function toggle(newState) {
     		let oldState=state;
@@ -137,16 +128,8 @@ Below is a better, simpler solution with the following advantages:
     		elem.onclick = e => toggle() ;
     		
     		toggle(state_);
-    		
-    		// update static instance counter
-    		ColoredDiv.staticCounter.advance();
     	}
     	
-    	// static methods
-    	ColoredDiv.NumInstances = function() {
-    		return ColoredDiv.staticCounter.value();
-    	}
-    
     	// public interface
     	return {
     		ctor,
@@ -165,8 +148,6 @@ Below is a better, simpler solution with the following advantages:
     let myDiv2=document.getElementById('myDiv2');
     let coloredDiv2 = ColoredDiv.New(myDiv2, false);
     setTimeout( () => {	coloredDiv2.state=true; }, 1000);
-    
-    console.log(ColoredDiv.NumInstances()); // 2
 
 **composition**
 
@@ -283,6 +264,7 @@ Below is a better, simpler solution with the following advantages:
 ## Example ##
 
 See a running example at [plunkr](https://plnkr.co/edit/MUnQABDe5seoVlXOrqfQ)
+
 
 
 
