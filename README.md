@@ -180,7 +180,7 @@ Below is a better, simpler solution with the following advantages:
     	}
     	
     	function ctor(v_) {
-    		v=(v_ || -1);
+    		v=(typeof v_ === 'undefined' ? -1 : v_ );
     	}
     	
     	return {
@@ -203,7 +203,7 @@ Below is a better, simpler solution with the following advantages:
     	}
     	
     	function ctor(v_) {
-    		v=(v_ || -1);
+    		v=(typeof v_ === 'undefined' ? -1 : v_ );
     		return C2.New(v-1); // compose C2
     	}
     
@@ -227,7 +227,7 @@ Below is a better, simpler solution with the following advantages:
     	}
     	
     	function ctor(v_) {
-    		v=(v_ || -1);
+    		v=(typeof v_ === 'undefined' ? -1 : v_ );
     		return [C1.New(), C3.New(v-1)]; // compose C1 & C3
     	}
     	
