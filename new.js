@@ -1,13 +1,10 @@
 "use strict";
 
-// https://github.com/kofifus/BetterES6Classes
+// https://github.com/kofifus/New.js
 if (typeof Function.prototype.New === 'undefined') {
 	Function.prototype.New= function(...args) {
-		// create instance
-		let inst=Object.create(this.prototype);
-
 		// get public interface
-		let header=this.call(inst);
+		let header=this();
 		if (!header || typeof header!=='object' || Array.isArray(header) || typeof header==='function' || Object.keys(header).length===0) throw 'New - invalid interface';
 		Object.setPrototypeOf(header, this.prototype); // fix prototype for instanceof
 		
@@ -16,7 +13,7 @@ if (typeof Function.prototype.New === 'undefined') {
 		if (ctor && typeof ctor!=='function') throw 'New - invalid ctor';
 		if (args.length>0 && !ctor) throw('New - missing ctor'); // no ctor to send arguments
 		if (ctor) {
-			composed=ctor.call(inst, ...args);
+			composed=ctor(...args);
 			delete header.ctor; // remove ctor from interface
 		}
 
