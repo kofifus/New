@@ -257,7 +257,7 @@ Below is a better, simpler solution with the following advantages:
 
  - You cannot use shorthand syntax for private methods.
 
- - 'this' is 'undefined' inside private methods. Don't use 'this' ! use closures .... before ES6 'this' was a necessary evil, now it is simply evil, an evil we can do without.
+ - 'this' is 'undefined' inside private methods. Don't use 'this' ! use closures .... before ES6 'this' was a necessary evil, now it is simply evil.
  
  - This pattern does not work well with inheritance, that is an object created with Derived.New() cannot access methods from Base. Personally I am trying to avoid inheritance (see [here](https://javascriptweblog.wordpress.com/2010/12/22/delegation-vs-inheritance-in-javascript/)) and use composition.
 
