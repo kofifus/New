@@ -35,8 +35,6 @@ Below is a better, simpler solution with the following advantages:
 
  - private variables and methods are _really_ private and have the correct 'this' binding
 
- - No use of 'this' at all which means clear code that is much less error prone (as a side note, before ES6 'this' was a necessary evil, now it is simply evil, an evil we can do without).
- 
  - public interface is clear and separated from the implementation as a proxy to private methods
 
  - easy support for composition
@@ -257,6 +255,8 @@ Below is a better, simpler solution with the following advantages:
 
  - You cannot use shorthand syntax for private methods.
 
+ - 'this===undefined' inside private methods. Don't use 'this' ! before ES6 'this' was a necessary evil, now it is simply evil, an evil we can do without).
+ 
  - This pattern does not work well with inheritance, that is an object created with Derived.New() cannot access methods from Base. Personally I am trying to avoid inheritance (see [here](https://javascriptweblog.wordpress.com/2010/12/22/delegation-vs-inheritance-in-javascript/)) and use composition.
 
 ## Example ##
