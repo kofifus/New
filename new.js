@@ -5,7 +5,7 @@ if (typeof Function.prototype.New === 'undefined') {
 	Function.prototype.New= function(...args) {
 		// get public interface
 		let header=this();
-		if (!header || typeof header!=='object' || Array.isArray(header) || typeof header==='function' || Object.keys(header).length===0) throw 'New - invalid interface';
+		if (!header || typeof header!=='object' || header.constructor===Array || header.constructor===Date || Object.keys(header).length===0) throw 'New - invalid interface';
 		Object.setPrototypeOf(header, this.prototype); // fix prototype for instanceof
 		
 		// ctor
