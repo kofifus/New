@@ -249,7 +249,7 @@ Below is a better, simpler solution with the following advantages:
     console.log('c4 C4V = '+c4.getC4V()); // 4
     console.log('c4 V = '+c4.getV());     // 4
 
-## Caviets ##
+## Notes ##
 
  - Create instances with inst=MyClass.New(...) instead of inst=new MyClass(...)
 
@@ -257,7 +257,7 @@ Below is a better, simpler solution with the following advantages:
 
  - You cannot use shorthand syntax for private methods.
 
- - 'this' is 'undefined' inside private methods. Don't use 'this' ! use closures .... before ES6 'this' was a necessary evil, now it is simply evil.
+ - 'this' inside 'ctor' is the instance and can be stored for later if needed (see 'self' in the example). 'this' is 'undefined' inside all other private methods. Don't use 'this' ! use closures .... before ES6 'this' was a necessary evil, now it is simply evil.
  
  - This pattern does not work well with inheritance, that is an object created with Derived.New() cannot access methods from Base. Personally I am trying to avoid inheritance (see [here](https://javascriptweblog.wordpress.com/2010/12/22/delegation-vs-inheritance-in-javascript/)) and use composition.
 
