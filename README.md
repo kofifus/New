@@ -107,7 +107,7 @@ function ColoredDiv() {
 		let oldState=state;
 		if (typeof newState==='undefined') state=!state; else state=newState;
 		elem.style.color=(state ? 'red' : 'blue');
-		console.log('self instanceof ColoredDiv == '+(self instanceof ColoredDiv)); // true
+		//console.log('self instanceof ColoredDiv == '+(self instanceof ColoredDiv)); // true
 	}
 
 	function red() { toggle(true); }
@@ -117,6 +117,7 @@ function ColoredDiv() {
 	function ctor(elem_, state_=true) {
 		//console.log(this instanceof ColoredDiv); // true
 		if (!elem_ || !elem_.tagName) throw 'ColoredDiv ctor invalid params';
+		
 		self=this; // this inside the ctor is the instance
 		elem=elem_;
 		state=state_
