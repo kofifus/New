@@ -96,7 +96,8 @@ Below is a better, simpler solution with the following advantages:
 <br/>
 **Complete class with a constructor & attributes)**
 
-```function ColoredDiv() {
+```
+function ColoredDiv() {
 	// private variables & methods
 	let self;
 	let elem;
