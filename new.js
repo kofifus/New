@@ -1,5 +1,3 @@
-"use strict";
-
 // https://github.com/kofifus/New.js
 if (typeof Function.prototype.New === 'undefined') {
 	Function.prototype.New= function(...args) {
