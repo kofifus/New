@@ -13,7 +13,7 @@ if (typeof Function.prototype.New === 'undefined') {
 		if (ctor && typeof ctor!=='function') throw 'New - invalid ctor';
 		if (args.length>0 && !ctor) throw('New - missing ctor'); // no ctor to send arguments
 		if (ctor) {
-			composed=ctor(...args);
+			composed=ctor.call(header, ...args);
 			delete header.ctor; // remove ctor from interface
 		}
 
