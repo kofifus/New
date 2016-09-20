@@ -1,5 +1,5 @@
 ## Background ##
-
+<br/>
 There are various solutions to creating Javascript 'classes' with public and private variables and methods. The current common solutions are:
 
  - putting public methods into 'this' and using closures with the 'that=this' hack for private methods.
@@ -29,6 +29,7 @@ I ended up dissatisfied with all of these solutions for the following reasons:
  - No clear separation of the public interface (proxy) of the class from the implementation
 
 ## Solution ##
+<br/>
 Below is a better, simpler solution with the following advantages:
 
  - no need for 'this._', that/self, weakmaps, symbols etc. Clear and straightforward 'class' code 
@@ -42,7 +43,7 @@ Below is a better, simpler solution with the following advantages:
 
 
 ## Usage ##
-
+<br/>
  - `<script src="https://rawgit.com/kofifus/BetterES6Classes/master/new.js"></script>`
 
  - a class is a function with no parameters - `function C()`
@@ -60,6 +61,7 @@ Below is a better, simpler solution with the following advantages:
 
 
 ## Examples##
+<br/>
 **Simple class - no constructor**
 
     function Counter() {
@@ -91,60 +93,59 @@ Below is a better, simpler solution with the following advantages:
     counter.reset(100);
     console.log('Counter next = '+counter.advance()); // 101
     console.log(Object.getOwnPropertyNames(counter)); // ["advance", "reset", "value"]
-
+<br/>
 **Complete class with a constructor & attributes)**
 
-    function ColoredDiv() {
-    	// private variables & methods
-    	let elem;
-    	let state; // true=red, false=blue
-    
-    	function toggle(newState) {
-    		let oldState=state;
-    		if (typeof newState==='undefined') state=!state; else state=newState;
-    		elem.style.color=(state ? 'red' : 'blue');
-    	}
-    
-    	function red() {
-    		toggle(true);
-    	}
-    	
-    	function blue() {
-    		toggle(false);
-    	}
-    	
-    	// constructor
-    	function ctor(elem_, state_=true) {
-    		//console.log(this instanceof ColoredDiv); // true
-    		if (!elem_ || !elem_.tagName) throw 'ColoredDiv ctor invalid params';
-    		elem=elem_;
-    		state=state_
-    
-    		// use e.currentTarget instead of 'this' in event handlers
-    		elem.onclick = e => toggle() ;
-    		
-    		toggle(state_);
-    	}
-    	
-    	// public interface
-    	return {
-    		ctor,
-    		red,  // color elem red
-    		blue, // color elem blue
-    		get state() { return state; },
-    		set state(s) { toggle(s); }
-    	};
-    }
-    
-    let myDiv1=document.getElementById('myDiv1');
-    let coloredDiv = ColoredDiv.New(myDiv1);
-    console.log(coloredDiv instanceof ColoredDiv); // true
-    coloredDiv.blue();
-    
-    let myDiv2=document.getElementById('myDiv2');
-    let coloredDiv2 = ColoredDiv.New(myDiv2, false);
-    setTimeout( () => {	coloredDiv2.state=true; }, 1000);
+```function ColoredDiv() {
+	// private variables & methods
+	let self;
+	let elem;
+	let state; // true=red, false=blue
 
+	function toggle(newState) {
+		let oldState=state;
+		if (typeof newState==='undefined') state=!state; else state=newState;
+		elem.style.color=(state ? 'red' : 'blue');
+		console.log('self instanceof ColoredDiv == '+(self instanceof ColoredDiv)); // true
+	}
+
+	function red() { toggle(true); }
+	function blue() { toggle(false); }
+	
+	// constructor
+	function ctor(elem_, state_=true) {
+		//console.log(this instanceof ColoredDiv); // true
+		if (!elem_ || !elem_.tagName) throw 'ColoredDiv ctor invalid params';
+		self=this; // this inside the ctor is the instance
+		elem=elem_;
+		state=state_
+
+		// use e.currentTarget instead of 'this' in event handlers
+		elem.onclick = e => toggle() ;
+		
+		toggle(state_);
+	}
+	
+	// public interface
+	return {
+		ctor,
+		red,  // color elem red
+		blue, // color elem blue
+		get state() { return state; },
+		set state(s) { toggle(s); }
+	};
+}
+
+let myDiv1=document.getElementById('myDiv1');
+let coloredDiv = ColoredDiv.New(myDiv1);
+console.log('coloredDiv instanceof ColoredDiv === '+(coloredDiv instanceof ColoredDiv)); // true
+coloredDiv.blue();
+
+let myDiv2=document.getElementById('myDiv2');
+let coloredDiv2 = ColoredDiv.New(myDiv2, false);
+setTimeout( () => {	coloredDiv2.state=true; }, 1000);
+```
+<br/>
 **composition**
 
     // class with no ctor
@@ -250,7 +251,7 @@ Below is a better, simpler solution with the following advantages:
     console.log('c4 V = '+c4.getV());     // 4
 
 ## Notes ##
-
+<br/>
  - Create instances with inst=MyClass.New(...) instead of inst=new MyClass(...)
 
  - Remember to return the ctor with the public interface. The ctor will not be available after construction ends.
@@ -262,7 +263,7 @@ Below is a better, simpler solution with the following advantages:
  - This pattern does not work well with inheritance, that is an object created with Derived.New() cannot access methods from Base. Personally I am trying to avoid inheritance (see [here](https://javascriptweblog.wordpress.com/2010/12/22/delegation-vs-inheritance-in-javascript/)) and use composition.
 
 ## Example ##
-
+<br/>
 See a running example at [plunkr](https://plnkr.co/edit/MUnQABDe5seoVlXOrqfQ)
 
 
