@@ -22,11 +22,11 @@ I ended up dissatisfied with all of these solutions for the following reasons:
 
  - Ugly syntax - ending up with lot's of 'this._', defining methods inside the constructor etc
  
- - Error prone - especially the issue of 'this' inside private methods not referring to the instance unless you remember the confusing 'that=this' hack
+ - Error prone - especially if a user decides to call a 'private' method 
 
  - Complicated - the use of WeakMaps or Symbols make the code hard to read with lot's of extra 'boiler' code
 
- - No clear separation of the public interface (proxy) of the class from the implementation
+ - No clear separation of the public interface (proxy) of the class from the implementation.
 
 ## Solution ##
 <br/>
