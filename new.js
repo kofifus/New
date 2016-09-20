@@ -1,11 +1,12 @@
-"use strict";
-
 // https://github.com/kofifus/New.js
 if (typeof Function.prototype.New === 'undefined') {
 	Function.prototype.New= function(...args) {
+		"use strict";
+		let isDict = d => (d !==undefined && d!==null && typeof d==='object' && d.constructor!==Array && d.constructor!==Date); 
+
 		// get public interface
 		let header=this();
-		if (!header || typeof header!=='object' || header.constructor===Array || header.constructor===Date || Object.keys(header).length===0) throw 'New - invalid interface';
+		if (!isDict(header)) throw 'New - invalid interface';
 		Object.setPrototypeOf(header, this.prototype); // fix prototype for instanceof
 		
 		// ctor
@@ -19,9 +20,10 @@ if (typeof Function.prototype.New === 'undefined') {
 
 		// compose
 		if (composed) {
-			if (!Array.isArray(composed) && typeof composed != 'function') composed=[composed];
+			if (isDict(composed)) composed=[composed];
+			if (composed.constructor!==Array) throw 'New - invalid composition';
 			composed.forEach(a => {
-				if (!a || Array.isArray(a) || typeof a == 'function' || Object.keys(a).length===0) throw 'New - invalid composition';
+				if (!isDict(a)) throw 'New - invalid composition';
 				let props = Object.getOwnPropertyNames(a);
 				props.forEach(key => { if (!header.hasOwnProperty(key)) Object.defineProperty(header, key, Object.getOwnPropertyDescriptor(a, key)); });
 			});
