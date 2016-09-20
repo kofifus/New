@@ -1,7 +1,8 @@
+"use strict";
+
 // https://github.com/kofifus/New.js
 if (typeof Function.prototype.New === 'undefined') {
 	Function.prototype.New= function(...args) {
-		"use strict";
 		let isDict = d => (d !==undefined && d!==null && typeof d==='object' && d.constructor!==Array && d.constructor!==Date); 
 
 		// get public interface
