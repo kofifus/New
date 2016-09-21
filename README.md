@@ -1,24 +1,9 @@
 ## Background ##
 <br/>
-There are various solutions to creating Javascript 'classes' with public and private variables and methods. The current common solutions are:
-
- - putting public methods into 'this' and using closures with the 'that=this' hack for private methods.
-(see: [http://javascript.crockford.com/private.html](http://javascript.crockford.com/private.html))
-
- - Private data via ES6 class constructor
- (see: [http://exploringjs.com/es6/ch_classes.html](http://exploringjs.com/es6/ch_classes.html))
- 
- - Private data via a '_' naming convention
-  (see: [http://exploringjs.com/es6/ch_classes.html](http://exploringjs.com/es6/ch_classes.html))
-
- - Private data via WeakMaps
-  (see: [http://exploringjs.com/es6/ch_classes.html](http://exploringjs.com/es6/ch_classes.html))
-
- - Private data via Symbols
-  (see: [http://exploringjs.com/es6/ch_classes.html](http://exploringjs.com/es6/ch_classes.html))
+There are various solutions to creating Javascript 'classes' with public and private variables and methods. The current common solutions include putting public methods into 'this' ([see](http://javascript.crockford.com/private.html)), Private data via ES6 class constructor ([see](http://exploringjs.com/es6/ch_classes.html)), Private data via a '_' naming convention ([see](http://exploringjs.com/es6/ch_classes.html)), Private data via WeakMaps ([see](http://exploringjs.com/es6/ch_classes.html)), Private data via Symbols ([see](http://exploringjs.com/es6/ch_classes.html)) and others.
 
 <br />
-I ended up dissatisfied with all of these solutions for the following reasons:
+The above methods have the following disadvantages:
 
  - Ugly syntax - ending up with lot's of 'this._', defining methods inside the constructor etc
  
@@ -34,7 +19,7 @@ Below is a better, simpler solution with the following advantages:
 
  - no need for 'this._', that/self, weakmaps, symbols etc. Clear and straightforward 'class' code 
 
- - private variables and methods are _really_ private and have the correct 'this' binding
+ - private variables and methods are _really_ private
 
  - public interface is clear and separated from the implementation as a proxy to private methods
 
@@ -52,12 +37,14 @@ Below is a better, simpler solution with the following advantages:
 
  - if you need a constructor define a 'ctor' method and return it with the public interface. 'New' will call 'ctor' with the arguments passed to 'New'.
 
+ - if you need to store the instance ('self'), get it from 'this' in the ctor. (see example)
+
  - create an instance with New - `let o=C.New(..);`
 
  - for composition return a 'New'ed class or array of classes from the 'ctor': ` 
 
      - `return ClassToCompose.New(..);` 
-     - `return [CtoCompose1.New(..), CtoCompose2.New(..)];`
+     - `return [CtoC1.New(..), CtoC2.New(..)];`
 
 
 ## Examples##
