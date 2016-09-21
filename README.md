@@ -2,7 +2,6 @@
 <br/>
 There are various solutions to creating Javascript 'classes' with public and private variables and methods. The current common solutions include putting public methods into 'this' ([see](http://javascript.crockford.com/private.html)), Private data via ES6 class constructor ([see](http://exploringjs.com/es6/ch_classes.html)), Private data via a '_' naming convention ([see](http://exploringjs.com/es6/ch_classes.html)), Private data via WeakMaps ([see](http://exploringjs.com/es6/ch_classes.html)), Private data via Symbols ([see](http://exploringjs.com/es6/ch_classes.html)) and others.
 
-<br />
 The above methods have the following disadvantages:
 
  - Ugly syntax - ending up with lot's of 'this._', defining methods inside the constructor etc
