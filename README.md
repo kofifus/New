@@ -36,7 +36,7 @@ Below is a better, simpler solution with the following advantages:
 
  - if you need a constructor define a 'ctor' method and return it with the public interface. 'New' will call 'ctor' with the arguments passed to 'New'.
 
- - if you need to store the instance ('self'), get it from 'this' in the ctor. (see example)
+ - if you need to store the instance ('self'), get it from 'this' in the ctor.
 
  - create an instance with New - `let o=C.New(..);`
 
@@ -80,7 +80,7 @@ Below is a better, simpler solution with the following advantages:
     console.log('Counter next = '+counter.advance()); // 101
     console.log(Object.getOwnPropertyNames(counter)); // ["advance", "reset", "value"]
 <br/>
-**Complete class with a constructor & attributes)**
+**Complete class (constructor & attributes & self)**
 
 ```
 function ColoredDiv() {
