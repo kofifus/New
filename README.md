@@ -28,7 +28,7 @@ Below is a better, simpler solution with the following advantages:
 
 ## Usage ##
 <br/>
- - `<script src="https://rawgit.com/kofifus/BetterES6Classes/master/new.min.js"></script>`
+ - `<script src="https://rawgit.com/kofifus/New/master/new.min.js"></script>`
 
  - a class is a function with no parameters - `function C()`
  
