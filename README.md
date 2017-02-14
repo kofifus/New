@@ -218,7 +218,7 @@ console.log('c4 V = '+c4.getV());     // 4
 <br/>
  - Create instances with inst=MyClass.New(...) instead of inst=new MyClass(...)
 
-  - You cannot use shorthand (arrow) syntax for private methods.
+ - You cannot use shorthand (arrow) syntax for private methods.
 
  - 'this' inside the constructor ('class' function) is the instance and can be stored for later if needed (see 'self' in the example). 'this' is 'undefined' inside all other private methods. You really only need to store 'this' in order to pass it back in event callback etc, don't use 'this' ! use closures .... before ES6 'this' was a necessary evil, now it is simply evil.
  
