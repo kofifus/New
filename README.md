@@ -46,7 +46,7 @@ Below is a better, simpler solution with the following advantages:
 
 ## Examples##
 <br/>
-**Simple class - no constructor**
+**Simple class**
 
     function Counter() {
     	// private variables & methods
@@ -78,7 +78,7 @@ Below is a better, simpler solution with the following advantages:
     console.log('Counter next = '+counter.advance()); // 101
     console.log(Object.getOwnPropertyNames(counter)); // ["advance", "reset", "value"]
 <br/>
-**Complete class (constructor & attributes & self)**
+**Complete class (with 'self' and constructor code)**
 
 ```
 function ColoredDiv(elem, state=true) {
