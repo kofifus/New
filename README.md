@@ -4,19 +4,19 @@ There are various solutions to creating Javascript 'classes' with public and pri
 
 The above methods have the following disadvantages:
 
- - Ugly syntax - ending up with lot's of 'this._', defining methods inside the constructor etc
+ - Ugly syntax - ending up with lots of 'this', 'this._', defining methods inside the constructor etc
  
  - Error prone - especially if a user decides to call a 'private' method 
 
- - Complicated - the use of WeakMaps or Symbols make the code hard to read with lot's of extra 'boiler' code
+ - Complicated - the use of WeakMaps or Symbols make the code hard to read with lots of extra 'boiler' code
 
- - No clear separation of the public interface (proxy) of the class from the implementation.
+ - No clear separation of the public interface (header) of the class from the implementation.
 
 ## Solution ##
 <br/>
 Below is a better, simpler solution with the following advantages:
 
- - no need for 'this._', that/self, weakmaps, symbols etc. Clear and straightforward 'class' code 
+ - no need for 'this', 'this._', that/self, weakmaps, symbols etc. Clear and straightforward 'class' code 
 
  - private variables and methods are _really_ private
 
@@ -34,16 +34,14 @@ Below is a better, simpler solution with the following advantages:
  
  - return a dictionary of public methods (the puclic interface) from 'class'
 
- - if you need a constructor define a 'ctor' method and return it with the public interface. 'New' will call 'ctor' with the arguments passed to 'New'.
-
- - if you need to store the instance ('self'), get it from 'this' in the ctor.
+  - if you need to store the instance ('self'), get it from 'this' in the constructor ('class' function).
 
  - create an instance with New - `let o=C.New(..);`
 
- - for composition return a 'New'ed class or array of classes from the 'ctor': ` 
+ - for composition return add a 'composed' property to the returned header with a 'New'ed class or array of 'New'ed classes: ` 
 
-     - `return ClassToCompose.New(..);` 
-     - `return [CtoC1.New(..), CtoC2.New(..)];`
+     - `return { composed: ClassToCompose.New(..), ... }` 
+     - `return { composed: [CtoC1.New(..), CtoC2.New(..)], ...`
 
 
 ## Examples##
@@ -83,40 +81,30 @@ Below is a better, simpler solution with the following advantages:
 **Complete class (constructor & attributes & self)**
 
 ```
-function ColoredDiv() {
+function ColoredDiv(elem, state=true) {
 	// private variables & methods
-	let self;
-	let elem;
-	let state; // true=red, false=blue
+	
+	const self=this; // useful to transfer the instance to callbacks etc
 
 	function toggle(newState) {
 		let oldState=state;
 		if (typeof newState==='undefined') state=!state; else state=newState;
 		elem.style.color=(state ? 'red' : 'blue');
-		//console.log('self instanceof ColoredDiv == '+(self instanceof ColoredDiv)); // true
+		console.log('self instanceof ColoredDiv == '+(self instanceof ColoredDiv)); // true
 	}
 
 	function red() { toggle(true); }
 	function blue() { toggle(false); }
 	
 	// constructor
-	function ctor(elem_, state_=true) {
-		//console.log(this instanceof ColoredDiv); // true
-		if (!elem_ || !elem_.tagName) throw 'ColoredDiv ctor invalid params';
-		
-		self=this; // this inside the ctor is the instance
-		elem=elem_;
-		state=state_
 
-		// use e.currentTarget instead of 'this' in event handlers
-		elem.onclick = e => toggle() ;
-		
-		toggle(state_);
-	}
-	
+	//console.log('this instanceof ColoredDiv = '+this instanceof ColoredDiv); // true
+	if (!elem || !elem.tagName) throw 'ColoredDiv ctor invalid params';
+	elem.onclick = e => toggle() ;
+	toggle(state);
+
 	// public interface
 	return {
-		ctor,
 		red,  // color elem red
 		blue, // color elem blue
 		get state() { return state; },
@@ -135,109 +123,97 @@ setTimeout( () => {	coloredDiv2.state=true; }, 1000);
 ```
 <br/>
 **composition**
+```
+function C1() {
+	let v=1;
+	
+	function getC1V() {
+		return v;
+	}
+	
+	function getV() {
+		return v;
+	}
+	
+	return {
+		getC1V,
+		getV
+	};
+}
 
-    // class with no ctor
-    function C1() {
-    	let v=1;
-    	
-    	function getC1V() {
-    		return v;
-    	}
-    	
-    	function getV() {
-    		return v;
-    	}
-    	
-    	return {
-    		getC1V,
-    		getV
-    	};
-    }
-    
-    // class with ctor
-    function C2() {
-    	let v;
-    	
-    	function getC2V() {
-    		return v;
-    	}
-    	
-    	function getV() {
-    		return v;
-    	}
-    	
-    	function ctor(v_) {
-    		v=(typeof v_ === 'undefined' ? -1 : v_ );
-    	}
-    	
-    	return {
-    		ctor,
-    		getC2V,
-    		getV
-    	};
-    }
-    
-    // class with ctor and composed with C2(2)
-    function C3() {
-    	let v;
-    	
-    	function getC3V() {
-    		return v;
-    	}
-    	
-    	function getV() {
-    		return v;
-    	}
-    	
-    	function ctor(v_) {
-    		v=(typeof v_ === 'undefined' ? -1 : v_ );
-    		return C2.New(v-1); // compose C2
-    	}
-    
-    	return {
-    		ctor,
-    		getC3V,
-    		getV
-    	};
-    }
-    
-    // class with ctor and composed with C1 and C3(3)
-    function C4() {
-    	let v;
-    	
-    	function getC4V() {
-    		return v;
-    	}
-    	
-    	function getV() {
-    		return v;
-    	}
-    	
-    	function ctor(v_) {
-    		v=(typeof v_ === 'undefined' ? -1 : v_ );
-    		return [C1.New(), C3.New(v-1)]; // compose C1 & C3
-    	}
-    	
-    	return {
-    		ctor,
-    		getC4V,
-    		getV
-    	};
-    }
-    
-    
-    let c3=C3.New(3); // composed with C2
-    console.log('c3 C2V = '+c3.getC2V()); // 2 from composing C2
-    console.log('c3 C3V = '+c3.getC3V()); // 3
-    console.log('c3 V = '+c3.getV());     // 3
-    
-    let c4=C4.New(4); // composed with C1 & C3
-    console.log('c4 C1V = '+c4.getC1V()); // 1 from composing C1
-    console.log('c4 C2V = '+c4.getC2V()); // 2 from composing C3
-    console.log('c4 C3V = '+c4.getC3V()); // 3 from composing C3
-    console.log('c4 C4V = '+c4.getC4V()); // 4
-    console.log('c4 V = '+c4.getV());     // 4
+function C2(v) {
+	function getC2V() {
+		return v;
+	}
+	
+	function getV() {
+		return v;
+	}
+	
+	if (typeof v === 'undefined') v=-1;
 
+	return {
+		getC2V,
+		getV
+	};
+}
+
+// class with ctor and composed with C2(2)
+function C3(v) {
+	function getC3V() {
+		return v;
+	}
+	
+	function getV() {
+		return v;
+	}
+	
+	if (typeof v === 'undefined') v=-1;
+
+	return {
+		composed: C2.New(v-1), // compose C2
+		getC3V,
+		getV
+	};
+}
+
+// class with ctor and composed with C1 and C3(3)
+function C4(v) {
+	function getC4V() {
+		return v;
+	}
+	
+	function getV() {
+		return v;
+	}
+	
+	if (typeof v === 'undefined') v=-1;
+
+	function ctor(v_) {
+		v=(typeof v_ === 'undefined' ? -1 : v_ );
+		return [C1.New(), C3.New(v-1)]; // compose C1 & C3
+	}
+	
+	return {
+		composed: [C1.New(), C3.New(v-1)], // compose C1 & C3
+		getC4V,
+		getV
+	};
+}
+    
+    
+let c3=C3.New(3); // composed with C2
+console.log('c3 C2V = '+c3.getC2V()); // 2 from composing C2
+console.log('c3 C3V = '+c3.getC3V()); // 3
+console.log('c3 V = '+c3.getV());     // 3
+
+let c4=C4.New(4); // composed with C1 & C3
+console.log('c4 C1V = '+c4.getC1V()); // 1 from composing C1
+console.log('c4 C2V = '+c4.getC2V()); // 2 from composing C3
+console.log('c4 C3V = '+c4.getC3V()); // 3 from composing C3
+console.log('c4 C4V = '+c4.getC4V()); // 4
+console.log('c4 V = '+c4.getV());     // 4
+```
 ## Notes ##
 <br/>
  - Create instances with inst=MyClass.New(...) instead of inst=new MyClass(...)
@@ -252,7 +228,7 @@ setTimeout( () => {	coloredDiv2.state=true; }, 1000);
 
 ## Example ##
 <br/>
-See a running example at [plunkr](https://plnkr.co/edit/MUnQABDe5seoVlXOrqfQ)
+See a running example at [plunkr](https://plnkr.co/edit/CsXGSdZs1sfnbhwj8ldT)
 
 
 
