@@ -34,7 +34,7 @@ Below is a better, simpler solution with the following advantages:
  
  - return a dictionary of public methods (the puclic interface) from 'class'
 
-  - if you need to store the instance ('self'), get it from 'this' in the constructor ('class' function).
+ - if you need to store the instance ('self'), get it from 'this' in the constructor ('class' function).
 
  - create an instance with New - `let o=C.New(..);`
 
