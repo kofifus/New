@@ -1,6 +1,5 @@
 ## Background
-<br/>
-There are various solutions to creating Javascript 'classes' with public and private variables and methods. The current common solutions include putting public methods into 'this' ( [see](http://javascript.crockford.com/private.html)), Private data via ES6 class constructor ([see](http://exploringjs.com/es6/ch_classes.html)), Private data via a '_' naming convention ([see](http://exploringjs.com/es6/ch_classes.html)), Private data via WeakMaps ([see](http://exploringjs.com/es6/ch_classes.html)), Private data via Symbols ([see](http://exploringjs.com/es6/ch_classes.html)) and others.
+There are various solutions to creating Javascript 'classes' with public and private variables and methods. The current common solutions include putting public methods into 'this' ([see](http://javascript.crockford.com/private.html)), Private data via ES6 class constructor ([see](http://exploringjs.com/es6/ch_classes.html)), Private data via a '_' naming convention ([see](http://exploringjs.com/es6/ch_classes.html)), Private data via WeakMaps ([see](http://exploringjs.com/es6/ch_classes.html)), Private data via Symbols ([see](http://exploringjs.com/es6/ch_classes.html)) and others.
 
 The above methods have the following disadvantages:
 
@@ -13,7 +12,7 @@ The above methods have the following disadvantages:
  - No clear separation of the public interface (header) of the class from the implementation.
 
 ## Solution
-<br/>
+
 Below is a better, simpler solution with the following advantages:
 
  - no need for 'this', 'this._', that/self, weakmaps, symbols etc. Clear and straightforward 'class' code 
@@ -24,10 +23,7 @@ Below is a better, simpler solution with the following advantages:
 
  - easy support for composition
 
-
-
 ## Usage
-<br/>
  - `<script src="https://rawgit.com/kofifus/New/master/new.min.js"></script>`
 
  - a class is a function with no parameters - `function C()`
@@ -45,9 +41,8 @@ Below is a better, simpler solution with the following advantages:
 
 
 ## Examples
-<br/>
 **Simple class**
-
+```javascript
     function Counter() {
     	// private variables and methods
     	let count=0;
@@ -77,10 +72,11 @@ Below is a better, simpler solution with the following advantages:
     counter.reset(100);
     console.log('Counter next = '+counter.advance()); // 101
     console.log(Object.getOwnPropertyNames(counter)); // ["advance", "reset", "value"]
-<br/>
+```
+
 **Complete class (with 'self' and constructor code)**
 
-```
+```javascript
 function ColoredDiv(elem, state=true) {
 	// private variables and methods
 	
@@ -121,9 +117,9 @@ let myDiv2=document.getElementById('myDiv2');
 let coloredDiv2 = ColoredDiv.New(myDiv2, false);
 setTimeout( () => {	coloredDiv2.state=true; }, 1000);
 ```
-<br/>
+
 **composition**
-```
+```javascript
 function C1() {
 	let v=1;
 	
@@ -214,7 +210,7 @@ console.log('c4 C4V = '+c4.getC4V()); // 4
 console.log('c4 V = '+c4.getV());     // 4
 ```
 ## Notes
-<br/>
+
  - Create instances with inst=MyClass.New(...) instead of inst=new MyClass(...)
 
  - You cannot use shorthand (arrow) syntax for private methods.
