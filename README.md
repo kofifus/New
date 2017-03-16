@@ -1,6 +1,6 @@
-## Background ##
+## Background
 <br/>
-There are various solutions to creating Javascript 'classes' with public and private variables and methods. The current common solutions include putting public methods into 'this' ([see](http://javascript.crockford.com/private.html)), Private data via ES6 class constructor ([see](http://exploringjs.com/es6/ch_classes.html)), Private data via a '_' naming convention ([see](http://exploringjs.com/es6/ch_classes.html)), Private data via WeakMaps ([see](http://exploringjs.com/es6/ch_classes.html)), Private data via Symbols ([see](http://exploringjs.com/es6/ch_classes.html)) and others.
+There are various solutions to creating Javascript 'classes' with public and private variables and methods. The current common solutions include putting public methods into 'this' ( [see](http://javascript.crockford.com/private.html)), Private data via ES6 class constructor ([see](http://exploringjs.com/es6/ch_classes.html)), Private data via a '_' naming convention ([see](http://exploringjs.com/es6/ch_classes.html)), Private data via WeakMaps ([see](http://exploringjs.com/es6/ch_classes.html)), Private data via Symbols ([see](http://exploringjs.com/es6/ch_classes.html)) and others.
 
 The above methods have the following disadvantages:
 
@@ -12,7 +12,7 @@ The above methods have the following disadvantages:
 
  - No clear separation of the public interface (header) of the class from the implementation.
 
-## Solution ##
+## Solution
 <br/>
 Below is a better, simpler solution with the following advantages:
 
@@ -26,7 +26,7 @@ Below is a better, simpler solution with the following advantages:
 
 
 
-## Usage ##
+## Usage
 <br/>
  - `<script src="https://rawgit.com/kofifus/New/master/new.min.js"></script>`
 
@@ -44,7 +44,7 @@ Below is a better, simpler solution with the following advantages:
      - `return { composed: [CtoC1.New(..), CtoC2.New(..)], ...`
 
 
-## Examples ##
+## Examples
 <br/>
 **Simple class**
 
@@ -213,7 +213,7 @@ console.log('c4 C3V = '+c4.getC3V()); // 3 from composing C3
 console.log('c4 C4V = '+c4.getC4V()); // 4
 console.log('c4 V = '+c4.getV());     // 4
 ```
-## Notes ##
+## Notes
 <br/>
  - Create instances with inst=MyClass.New(...) instead of inst=new MyClass(...)
 
@@ -225,7 +225,7 @@ console.log('c4 V = '+c4.getV());     // 4
  
  - Like any method that does not use prototypes, every instance will hold all it's private methods. Because of that methods such as this are not suitable when many instances of the 'class' are created.
 
-## Example ##
+## Example
 <br/>
 See a running example at [plunkr](https://plnkr.co/edit/CsXGSdZs1sfnbhwj8ldT)
 
