@@ -44,12 +44,12 @@ Below is a better, simpler solution with the following advantages:
      - `return { composed: [CtoC1.New(..), CtoC2.New(..)], ...`
 
 
-## Examples##
+## Examples ##
 <br/>
 **Simple class**
 
     function Counter() {
-    	// private variables & methods
+    	// private variables and methods
     	let count=0;
     
     	function advance() {
@@ -82,7 +82,7 @@ Below is a better, simpler solution with the following advantages:
 
 ```
 function ColoredDiv(elem, state=true) {
-	// private variables & methods
+	// private variables and methods
 	
 	const self=this; // useful to transfer the instance to callbacks etc
 
@@ -191,23 +191,22 @@ function C4(v) {
 
 	function ctor(v_) {
 		v=(typeof v_ === 'undefined' ? -1 : v_ );
-		return [C1.New(), C3.New(v-1)]; // compose C1 & C3
+		return [C1.New(), C3.New(v-1)]; // compose C1 and C3
 	}
 	
 	return {
-		composed: [C1.New(), C3.New(v-1)], // compose C1 & C3
+		composed: [C1.New(), C3.New(v-1)], // compose C1 and C3
 		getC4V,
 		getV
 	};
 }
-    
-    
+
 let c3=C3.New(3); // composed with C2
 console.log('c3 C2V = '+c3.getC2V()); // 2 from composing C2
 console.log('c3 C3V = '+c3.getC3V()); // 3
 console.log('c3 V = '+c3.getV());     // 3
 
-let c4=C4.New(4); // composed with C1 & C3
+let c4=C4.New(4); // composed with C1 and C3
 console.log('c4 C1V = '+c4.getC1V()); // 1 from composing C1
 console.log('c4 C2V = '+c4.getC2V()); // 2 from composing C3
 console.log('c4 C3V = '+c4.getC3V()); // 3 from composing C3
