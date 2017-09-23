@@ -43,31 +43,31 @@ Below is a better, simpler solution with the following advantages:
 ## Examples
 **Simple class**
 ```javascript
-    function Counter() {
-      // public interface
-      const proxy = {
-        advance,  // advance counter and get new value
-        reset,    // reset value
-        value     // get value
-      }
+function Counter() {
+  // public interface
+  const proxy = {
+    advance,  // advance counter and get new value
+    reset,    // reset value
+    value     // get value
+  }
 	
-    	// private variables and methods
-    	let count=0;
+  // private variables and methods
+  let count=0;
     
-    	function advance() {
-    		return ++count;
-    	}
+  function advance() {
+    return ++count;
+  }
     	
-    	function reset(newCount) {
-    		count=(newCount || 0);
-    	}
+  function reset(newCount) {
+    count=(newCount || 0);
+  }
     	
-    	function value() {
-    		return count;
-    	}
+  function value() {
+    return count;
+  }
     
-    	return proxy;
-    }
+  return proxy;
+}
     	
     let counter=Counter.New();
     console.log(counter instanceof Counter); // true
