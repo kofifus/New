@@ -44,11 +44,12 @@ Below is a better, simpler solution with the following advantages:
 **Simple class**
 ```javascript
     function Counter() {
-	const proxy = {
-		advance,  // advance counter and get new value
-		reset,    // reset value
-		value     // get value
-  	}
+      // public interface
+      const proxy = {
+        advance,  // advance counter and get new value
+        reset,    // reset value
+        value     // get value
+      }
 	
     	// private variables and methods
     	let count=0;
