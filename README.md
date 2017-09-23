@@ -220,7 +220,7 @@ console.log('c4 V = '+c4.getV());     // 4
 
 ## Example
 <br/>
-See a running example at [plunkr](https://plnkr.co/edit/plKDXuX9US7JCnYwVnp8)
+See a running example at [plunkr](https://plnkr.co/edit/fi3V1FYyurhIzlldxo8c)
 
 
 
