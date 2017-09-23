@@ -69,47 +69,47 @@ function Counter() {
   return proxy;
 }
     	
-    let counter=Counter.New();
-    console.log(counter instanceof Counter); // true
-    counter.reset(100);
-    console.log('Counter next = '+counter.advance()); // 101
-    console.log(Object.getOwnPropertyNames(counter)); // ["advance", "reset", "value"]
+let counter=Counter.New();
+console.log(counter instanceof Counter); // true
+counter.reset(100);
+console.log('Counter next = '+counter.advance()); // 101
+console.log(Object.getOwnPropertyNames(counter)); // ["advance", "reset", "value"]
 ```
 
 **Complete class (with 'self' and constructor code)**
 
 ```javascript
 function ColoredDiv(elem, state=true) {
-	// public interface
-	const proxy = {
-		red,  // color elem red
-		blue, // color elem blue
-		get state() { return state; }, // get toggle state
-		set state(s) { toggle(s); }    // set toggle state
-  	}
+  // public interface
+  const proxy = {
+    red,  // color elem red
+    blue, // color elem blue
+    get state() { return state; }, // get toggle state
+    set state(s) { toggle(s); }    // set toggle state
+  }
 
-	// private variables and methods
+  // private variables and methods
 	
-	const self=this; // useful to transfer the instance to callbacks etc
+  const self=this; // useful to transfer the instance to callbacks etc
 
-	function toggle(newState) {
-		let oldState=state;
-		if (typeof newState==='undefined') state=!state; else state=newState;
-		elem.style.color=(state ? 'red' : 'blue');
-		console.log('self instanceof ColoredDiv == '+(self instanceof ColoredDiv)); // true
-	}
+  function toggle(newState) {
+    let oldState=state;
+    if (typeof newState==='undefined') state=!state; else state=newState;
+    elem.style.color=(state ? 'red' : 'blue');
+    console.log('self instanceof ColoredDiv == '+(self instanceof ColoredDiv)); // true
+  }
 
-	function red() { toggle(true); }
-	function blue() { toggle(false); }
+  function red() { toggle(true); }
+  function blue() { toggle(false); }
 	
-	// constructor
+  // constructor
 
-	//console.log('this instanceof ColoredDiv = '+this instanceof ColoredDiv); // true
-	if (!elem || !elem.tagName) throw 'ColoredDiv ctor invalid params';
-	elem.onclick = e => toggle() ;
-	toggle(state);
+  //console.log('this instanceof ColoredDiv = '+this instanceof ColoredDiv); // true
+  if (!elem || !elem.tagName) throw 'ColoredDiv ctor invalid params';
+  elem.onclick = e => toggle() ;
+  toggle(state);
 
-	return proxy;
+  return proxy;
 }
 
 let myDiv1=document.getElementById('myDiv1');
@@ -125,80 +125,75 @@ setTimeout( () => {	coloredDiv2.state=true; }, 1000);
 **composition**
 ```javascript
 function C1() {
-	let v=1;
+  let v=1;
 	
-	function getC1V() {
-		return v;
-	}
+  function getC1V() {
+    return v;
+  }
 	
-	function getV() {
-		return v;
-	}
+  function getV() {
+    return v;
+  }
 	
-	return {
-		getC1V,
-		getV
-	};
+  return {
+    getC1V,
+    getV
+  };
 }
 
 function C2(v) {
-	function getC2V() {
-		return v;
-	}
+  function getC2V() {
+    return v;
+  }
 	
-	function getV() {
-		return v;
-	}
+  function getV() {
+    return v;
+  }
 	
-	if (typeof v === 'undefined') v=-1;
+  if (typeof v === 'undefined') v=-1;
 
-	return {
-		getC2V,
-		getV
-	};
+  return {
+    getC2V,
+    getV
+  };
 }
 
-// class with ctor and composed with C2(2)
+// composed with C2(2)
 function C3(v) {
-	function getC3V() {
-		return v;
-	}
+  function getC3V() {
+    return v;
+  }
 	
-	function getV() {
-		return v;
-	}
+  function getV() {
+    return v;
+  }
 	
-	if (typeof v === 'undefined') v=-1;
+ if (typeof v === 'undefined') v=-1;
 
-	return {
-		composed: C2.New(v-1), // compose C2
-		getC3V,
-		getV
-	};
+  return {
+    composed: C2.New(v-1), // compose C2
+    getC3V,
+    getV
+  };
 }
 
-// class with ctor and composed with C1 and C3(3)
+// composed with C1 and C3(3)
 function C4(v) {
-	function getC4V() {
-		return v;
-	}
+  function getC4V() {
+    return v;
+  }
 	
-	function getV() {
-		return v;
-	}
+  function getV() {
+    return v;
+  }
 	
-	if (typeof v === 'undefined') v=-1;
+  if (typeof v === 'undefined') v=-1;
 
-	function ctor(v_) {
-		v=(typeof v_ === 'undefined' ? -1 : v_ );
-		return [C1.New(), C3.New(v-1)]; // compose C1 and C3
-	}
-	
-	return {
-		composed: [C1.New(), C3.New(v-1)], // compose C1 and C3
-		getC4V,
-		getV
-	};
+  return {
+    composed: [C1.New(), C3.New(v-1)], // compose C1 and C3
+    getC4V,
+    getV
+  };
 }
 
 let c3=C3.New(3); // composed with C2
