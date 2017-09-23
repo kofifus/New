@@ -15,11 +15,11 @@ The above methods have the following disadvantages:
 
 Below is a better, simpler solution with the following advantages:
 
- - no need for 'this', 'this._', that/self, weakmaps, symbols etc. Clear and straightforward 'class' code 
+ - no need for this, this.\_, that/self, weakmaps, symbols etc. Clear and straightforward 'class' code 
 
- - private variables and methods are _really_ private
+ - private variables and methods are _really_ private in closure
 
- - public interface is clear and separated from the implementation as a proxy to private methods
+ - public interface is clear, separated from the implementation ande defined at the top of the class
 
  - easy support for composition
 
@@ -219,7 +219,7 @@ console.log('c4 V = '+c4.getV());     // 4
  
  - This pattern is not meant to work well with inheritance, that is an object created with Derived.New() cannot access methods from Base. Instead it supports composition (see [here](https://javascriptweblog.wordpress.com/2010/12/22/delegation-vs-inheritance-in-javascript/)).
  
- - Like any method that does not use prototypes, every instance will hold all it's private methods. Because of that methods such as this are not suitable when many instances of the 'class' are created.
+ - Like any method that does not use prototypes, every instance will hold all it's private methods. However modern javascript engines are highly optimized for this and nexted functions overhead is just a functio object. Still, New may not be suitable where a very big number of instances of the 'class' are created.
 
 ## Example
 <br/>
