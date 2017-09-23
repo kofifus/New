@@ -44,6 +44,12 @@ Below is a better, simpler solution with the following advantages:
 **Simple class**
 ```javascript
     function Counter() {
+	const proxy = {
+		advance,  // advance counter and get new value
+		reset,    // reset value
+		value     // get value
+  	}
+	
     	// private variables and methods
     	let count=0;
     
@@ -59,12 +65,7 @@ Below is a better, simpler solution with the following advantages:
     		return count;
     	}
     
-    	// public interface
-    	return {
-    		advance,  // advance counter and get new value
-    		reset, // reset value
-    		value  // get value
-    	}
+    	return proxy;
     }
     	
     let counter=Counter.New();
@@ -78,6 +79,14 @@ Below is a better, simpler solution with the following advantages:
 
 ```javascript
 function ColoredDiv(elem, state=true) {
+	// public interface
+	const proxy = {
+		red,  // color elem red
+		blue, // color elem blue
+		get state() { return state; }, // get toggle state
+		set state(s) { toggle(s); }    // set toggle state
+  	}
+
 	// private variables and methods
 	
 	const self=this; // useful to transfer the instance to callbacks etc
@@ -99,13 +108,7 @@ function ColoredDiv(elem, state=true) {
 	elem.onclick = e => toggle() ;
 	toggle(state);
 
-	// public interface
-	return {
-		red,  // color elem red
-		blue, // color elem blue
-		get state() { return state; },
-		set state(s) { toggle(s); }
-	};
+	return proxy;
 }
 
 let myDiv1=document.getElementById('myDiv1');
