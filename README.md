@@ -213,8 +213,6 @@ console.log('c4 V = '+c4.getV());     // 4
 
  - Create instances with inst=MyClass.New(...) instead of inst=new MyClass(...)
 
- - You cannot use shorthand (arrow) syntax for private methods.
-
  - 'this' inside the constructor ('class' function) is the instance and can be stored for later if needed (see 'self' in the example). 'this' is 'undefined' inside all other private methods. You really only need to store 'this' in order to pass it back in event callback etc, don't use 'this' ! use closures .... before ES6 'this' was a necessary evil, now it is simply evil.
  
  - This pattern is not meant to work well with inheritance, that is an object created with Derived.New() cannot access methods from Base. Instead it supports composition (see [here](https://javascriptweblog.wordpress.com/2010/12/22/delegation-vs-inheritance-in-javascript/)).
